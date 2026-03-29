@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -77,8 +77,16 @@ app.post('/generate', async (req, res) => {
                 return res.status(500).send("Error rendering template");
             }
 
-            // 2. Launch Puppeteer to generate PDF
-            const browser = await puppeteer.launch({ headless: "new" });
+            // 2. Launch Puppeteer with production-safe args to avoid sandbox issues on Heroku/Render
+            const browser = await puppeteer.launch({ 
+                headless: "new",
+                args: [
+                    '--no-sandbox', 
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--single-process'
+                ]
+            });
             const page = await browser.newPage();
             
             // Inject base URL so relative assets (CSS/Images) can be found
