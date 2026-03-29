@@ -1,0 +1,156 @@
+/* html, body {
+  height: 100%;
+} */
+/* table {
+  width: 100%;
+  height: 100%;
+} */
+tr
+	{mso-height-source:auto;}
+col
+	{mso-width-source:auto;}
+br
+	{mso-data-placement:same-cell;}
+.style0
+	{mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	white-space:nowrap;
+	mso-rotate:0;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	color:black;
+	font-size:11.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Calibri, sans-serif;
+	mso-font-charset:0;
+	border:none;
+	mso-protection:locked visible;
+	mso-style-name:Normal;
+	mso-style-id:0;}
+.font7
+	{color:black;
+	font-size:11.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Bookman Old Style", serif;
+	mso-font-charset:0;}
+.font8
+	{color:black;
+	font-size:11.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Bookman Old Style", serif;
+	mso-font-charset:0;}
+td
+	{mso-style-parent:style0;
+	padding:0px;
+	mso-ignore:padding;
+	color:black;
+	font-size:11.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Calibri, sans-serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	border:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	mso-protection:locked visible;
+	white-space:nowrap;
+	mso-rotate:0;}
+.xl65
+	{mso-style-parent:style0;
+	font-weight:700;
+	font-family:"Bookman Old Style", serif;
+	mso-font-charset:0;}
+.xl66
+	{mso-style-parent:style0;
+	font-family:"Bookman Old Style", serif;
+	mso-font-charset:0;}
+.xl67
+	{mso-style-parent:style0;
+	font-family:"Bookman Old Style", serif;
+	mso-font-charset:0;
+	text-align:right;}
+.xl68
+	{mso-style-parent:style0;
+	font-family:"Bookman Old Style", serif;
+	mso-font-charset:0;
+	mso-number-format:"\[$-14009\]dd\/mm\/yyyy\;\@";
+	text-align:left;
+	vertical-align:middle;}
+.xl69
+	{mso-style-parent:style0;
+	font-family:"Bookman Old Style", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;}
+.xl70
+	{mso-style-parent:style0;
+	font-family:"Bookman Old Style", serif;
+	mso-font-charset:0;
+	text-align:left;
+	padding-left:12px;
+	mso-char-indent-count:1;}
+.xl71
+	{mso-style-parent:style0;
+	font-weight:700;
+	font-family:"Bookman Old Style", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;
+	border:.5pt solid windowtext;}
+.xl72
+	{mso-style-parent:style0;
+	font-family:"Bookman Old Style", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;
+	border:.5pt solid windowtext;}
+.xl73
+	{mso-style-parent:style0;
+	font-family:"Bookman Old Style", serif;
+	mso-font-charset:0;
+	mso-number-format:"mmm\/yy";
+	text-align:center;
+	vertical-align:middle;
+	border:.5pt solid windowtext;}
+.xl74
+	{mso-style-parent:style0;
+	font-weight:700;
+	font-family:"Bookman Old Style", serif;
+	mso-font-charset:0;
+	text-align:right;
+	vertical-align:top;}
+.xl75
+	{mso-style-parent:style0;
+	font-family:"Bookman Old Style", serif;
+	mso-font-charset:0;
+	text-align:center;}
+.xl76
+	{mso-style-parent:style0;
+	font-weight:700;
+	font-family:"Bookman Old Style", serif;
+	mso-font-charset:0;
+	text-align:left;
+	vertical-align:top;}
+.xl77
+	{mso-style-parent:style0;
+	color:#B4C6E7;
+	font-size:15.0pt;
+	font-weight:700;
+	text-align:center;}
+.xl78
+	{mso-style-parent:style0;
+	color:#203764;
+	font-size:12.0pt;
+	font-weight:700;
+	text-align:center;}
