@@ -51,6 +51,12 @@ body {
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    width: 100vw;
+}
+
+html {
+    overflow-x: hidden;
+    width: 100vw;
 }
 
 /* Container */
@@ -171,16 +177,19 @@ input, select, textarea {
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* Ensure all native icons (calendar, arrows) are brilliantly visible *//* 
+/* Ensure all native icons (calendar, arrows) are brilliantly visible */
+/* 
    Since color-scheme: dark is active, native icons are light grey/white.
    We just boost their opacity and brightness.
 */
 ::-webkit-calendar-picker-indicator,
 ::-webkit-inner-spin-button,
+::-webkit-outer-spin-button,
 ::-webkit-clear-button {
     cursor: pointer;
     opacity: 1;
     filter: brightness(2) contrast(2);
+    transition: 0.2s;
 }
 
 ::-webkit-calendar-picker-indicator:hover {
@@ -240,7 +249,7 @@ select option {
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 900px;
+    min-width: 100%;
 }
 
 th {
@@ -464,7 +473,10 @@ td input.amount-input {
         overflow: hidden;
     }
 
-    select { max-width: 100%; }
+    select, input, textarea { 
+        max-width: 100%; 
+        box-sizing: border-box;
+    }
 
     /* Table Fix */
     .table-wrapper {
