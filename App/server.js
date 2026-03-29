@@ -89,7 +89,7 @@ app.post('/generate', async (req, res) => {
             const pdfBuffer = await page.pdf({
                 format: 'A4',
                 printBackground: true,
-                margin: { top: '5mm', bottom: '5mm', left: '5mm', right: '5mm' }
+                margin: { top: '0px', bottom: '0px', left: '0px', right: '0px' }
             });
 
             await browser.close();
