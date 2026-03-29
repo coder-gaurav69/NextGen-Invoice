@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="template.css">
 </head>
 <body>
     <table border=0 cellpadding=0 cellspacing=0 width=743 style='border-collapse:
@@ -194,7 +194,7 @@
  </tr>
  <tr height=19 style='height:14.4pt'>
   <td height=19 style='height:14.4pt'></td>
-  <td class=xl65>PT.<span style='mso-spacerun:yes'><%= patient_name %></span></td>
+  <td class=xl65>PT.&ensp;<span style='mso-spacerun:yes'><%= patient_name.toUpperCase() %></span></td>
   <td class=xl65></td>
   <td class=xl65></td>
   <td class=xl65></td>
@@ -204,7 +204,7 @@
  </tr>
  <tr height=19 style='height:14.4pt'>
   <td height=19 style='height:14.4pt'></td>
-  <td class=xl65>IP NO.<span style='mso-spacerun:yes'><%= ip_no %></span></td>
+  <td class=xl65>IP NO.&ensp;<span style='mso-spacerun:yes'><%= ip_no %></span></td>
   <td class=xl65></td>
   <td class=xl65></td>
   <td class=xl65></td>
@@ -303,7 +303,7 @@
  <% data.map((item) => { %>
  <tr height=19 style='height:14.4pt'>
   <td height=19 style='height:14.4pt'></td>
-  <td class=xl72 style='border-top:none'><%= item.item_name %> </td>
+  <td class=xl72 style='border-top:none'><%= item.item_name.toUpperCase() %> </td>
   <td class=xl72 style='border-top:none;border-left:none'><%= item.batch_no %></td>
   <td class=xl73 style='border-top:none;border-left:none'><%= item.exp %></td>
   <td class=xl72 style='border-top:none;border-left:none'><%= item.rate %></td>
@@ -312,8 +312,10 @@
   <td></td>
 </tr>
 <% }) %>
- 
-    <%for(let i = 0; i < 1; i++) { %>
+
+
+    <% const beforeRows = (16 - data.length)/2 %>
+    <%for(let i = 0; i < beforeRows; i++) { %>
           <tr height=19 style='height:14.4pt'>
             <td height=19 style='height:14.4pt'></td>
             <td class=xl66></td>
@@ -336,8 +338,8 @@
   <td class=xl69></td>
   <td></td>
  </tr>
-        <% const additionalRows = 15 %>
-        <%for(let i = 0; i < additionalRows - data.length; i++) { %>
+        <% const afterRows = (16- data.length) / 2 %>
+        <%for(let i = 0; i < afterRows; i++) { %>
           <tr height=19 style='height:14.4pt'>
             <td height=19 style='height:14.4pt'></td>
             <td class=xl66></td>
