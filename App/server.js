@@ -44,10 +44,25 @@ app.post('/generate', async (req, res) => {
     const finalHospitalName = hospital_name === 'Other' ? custom_hospital_name : hospital_name;
     const filteredData = Array.isArray(formData) ? formData.filter(item => item.item_name) : [];
 
+    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    const formattedData = filteredData.map(item => {
+        if (item.exp && item.exp.includes('-')) {
+            const parts = item.exp.split('-');
+            if (parts.length === 2 && parts[0].length === 4) {
+               const year = parts[0];
+               const monthIndex = parseInt(parts[1], 10) - 1;
+               if (monthIndex >= 0 && monthIndex < 12) {
+                   item.exp = `${monthNames[monthIndex]}-${year}`;
+               }
+            }
+        }
+        return item;
+    });
+
     try {
         // 1. Render EJS template to HTML string
         app.render("template", { 
-            data: filteredData, 
+            data: formattedData, 
             date, 
             patient_name, 
             ip_no, 

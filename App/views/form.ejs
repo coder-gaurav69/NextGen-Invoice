@@ -98,9 +98,9 @@
                                 <tr class="item-row">
                                     <td><input type="text" name="data[0][item_name]" required placeholder="Medicine Name"></td>
                                     <td><input type="text" name="data[0][batch_no]" required placeholder="B123..."></td>
-                                    <td><input type="text" name="data[0][exp]" placeholder="MMM-YY" required></td>
-                                    <td><input type="number" step="0.01" name="data[0][rate]" class="rate-input" required placeholder="0.00"></td>
-                                    <td><input type="number" name="data[0][quantity]" class="qty-input" required placeholder="0"></td>
+                                    <td><input type="month" name="data[0][exp]" required></td>
+                                    <td><input type="number" step="0.01" min="0" name="data[0][rate]" class="rate-input" required placeholder="0.00"></td>
+                                    <td><input type="number" min="1" name="data[0][quantity]" class="qty-input" required placeholder="0"></td>
                                     <td><input type="number" step="0.01" name="data[0][amount]" class="amount-input" readonly value="0.00"></td>
                                     <td></td>
                                 </tr>
@@ -272,9 +272,9 @@
             row.innerHTML = `
                 <td><input type="text" name="data[${itemIndex}][item_name]" required></td>
                 <td><input type="text" name="data[${itemIndex}][batch_no]" required></td>
-                <td><input type="text" name="data[${itemIndex}][exp]" placeholder="MMM-YY" required></td>
-                <td><input type="number" step="0.01" name="data[${itemIndex}][rate]" class="rate-input" required></td>
-                <td><input type="number" name="data[${itemIndex}][quantity]" class="qty-input" required></td>
+                <td><input type="month" name="data[${itemIndex}][exp]" required></td>
+                <td><input type="number" step="0.01" min="0" name="data[${itemIndex}][rate]" class="rate-input" required></td>
+                <td><input type="number" min="1" name="data[${itemIndex}][quantity]" class="qty-input" required></td>
                 <td><input type="number" step="0.01" name="data[${itemIndex}][amount]" class="amount-input" readonly></td>
                 <td><button type="button" class="btn btn-danger" onclick="removeItem(this)">×</button></td>
             `;
