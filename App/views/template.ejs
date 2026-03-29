@@ -343,7 +343,7 @@
       <% }) %>
 
 
-        <% const beforeRows=(17 - data.length)/2 %>
+        <% const beforeRows = Math.floor((17 - data.length) / 2) %>
           <%for(let i=0; i < beforeRows; i++) { %>
             <tr height=19 style='height:14.4pt'>
               <td height=19 style='height:14.4pt'></td>
@@ -369,7 +369,7 @@
                 <td class=xl69></td>
                 <td></td>
               </tr>
-              <% const afterRows=(17- data.length) / 2 %>
+              <% const afterRows = Math.ceil((17 - data.length) / 2) %>
                 <%for(let i=0; i < afterRows; i++) { %>
                   <tr height=19 style='height:14.4pt'>
                     <td height=19 style='height:14.4pt'></td>
