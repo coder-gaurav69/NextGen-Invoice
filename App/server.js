@@ -15,23 +15,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Home route redirecting to form
-const data = [
-    { item_name: "Item 3", batch_no: "B003", exp: "2026-01", rate: "150" ,quantity: "2", amount: "300"},
-    { item_name: "Item 3", batch_no: "B003", exp: "2026-01", rate: "150" ,quantity: "2", amount: "300"},
-    { item_name: "Item 3", batch_no: "B003", exp: "2026-01", rate: "150" ,quantity: "2", amount: "300"},
-    { item_name: "Item 3", batch_no: "B003", exp: "2026-01", rate: "150" ,quantity: "2", amount: "300"},
-    { item_name: "Item 3", batch_no: "B003", exp: "2026-01", rate: "150" ,quantity: "2", amount: "300"},
-    { item_name: "Item 3", batch_no: "B003", exp: "2026-01", rate: "150" ,quantity: "2", amount: "300"},
-    { item_name: "Item 3", batch_no: "B003", exp: "2026-01", rate: "150" ,quantity: "2", amount: "300"},
-    { item_name: "Item 3", batch_no: "B003", exp: "2026-01", rate: "150" ,quantity: "2", amount: "300"},
-    { item_name: "Item 3", batch_no: "B003", exp: "2026-01", rate: "150" ,quantity: "2", amount: "300"},
-    { item_name: "Item 3", batch_no: "B003", exp: "2026-01", rate: "150" ,quantity: "2", amount: "300"},
-    { item_name: "Item 3", batch_no: "B003", exp: "2026-01", rate: "150" ,quantity: "2", amount: "300"},
-    { item_name: "Item 3", batch_no: "B003", exp: "2026-01", rate: "150" ,quantity: "2", amount: "300"},
-    { item_name: "Item 3", batch_no: "B003", exp: "2026-01", rate: "150" ,quantity: "2", amount: "300"},
-]
+
 app.get('/', (req, res) => {
-    res.render("template", { data , date: "2024-06-01", patient_name: "John Doe", ip_no: "IP12345", hospital_name: "City Hospital", unit: "Unit A", address: "123 Street, City", gst_no: "GSTIN12345", total_amount: "450"});
+    res.render("form");
 });
 
 // Route to show the form

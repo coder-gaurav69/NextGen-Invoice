@@ -21,7 +21,7 @@ table {
 
 body {
 	display: block;
-	text-align: center;
+	/* Removed text-align: center to prevent breaking table cell alignments */
 }
 
 table {

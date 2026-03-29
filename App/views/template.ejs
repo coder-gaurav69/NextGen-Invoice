@@ -200,7 +200,7 @@
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
       <td class=xl65>PT.&ensp;<span style='mso-spacerun:yes'>
-          <%= patient_name.toUpperCase() %>
+          <%= patient_name ? patient_name.toUpperCase() : '' %>
         </span></td>
       <td class=xl65></td>
       <td class=xl65></td>
@@ -212,7 +212,7 @@
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
       <td class=xl65>IP NO.&ensp;<span style='mso-spacerun:yes'>
-          <%= ip_no %>
+          <%= ip_no || '' %>
         </span></td>
       <td class=xl65></td>
       <td class=xl65></td>
@@ -233,38 +233,43 @@
     </tr>
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl65 colspan=4 style='mso-ignore:colspan'>
-        <%= hospital_name %>
+      <td class=xl65>
+        <%= hospital_name ? hospital_name.toUpperCase() : '' %>
       </td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
       <td class=xl66></td>
       <td class=xl66></td>
       <td></td>
     </tr>
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl66 colspan=4 style='mso-ignore:colspan'>
-        <%= unit %>
+      <td class=xl66 colspan=2 style='mso-ignore:colspan'>
+        <%= unit || '' %>
       </td>
       <td class=xl66></td>
       <td class=xl66></td>
-      <td></td>
-    </tr>
-
-
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66 colspan=4 style='mso-ignore:colspan'>
-        <%= address %>
-      </td>
       <td class=xl66></td>
       <td class=xl66></td>
       <td></td>
     </tr>
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl65 colspan=4 style='mso-ignore:colspan'>
-        GST NO: <%= gst_no %>
+      <td class=xl66 colspan=3 style='mso-ignore:colspan'>
+        <%= address || '' %>
       </td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td></td>
+    </tr>
+    <tr height=19 style='height:14.4pt'>
+      <td height=19 style='height:14.4pt'></td>
+      <td class=xl66>GST NO-<%= gst_no || '' %></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
       <td class=xl66></td>
       <td class=xl66></td>
       <td></td>
