@@ -16,11 +16,24 @@
 	body {
 		/* Keep original visual offset while staying inside a fixed A4 canvas */
 		width: 210mm;
-		height: 297mm;
+		height: 283mm;
 		
 		box-sizing: border-box;
 		padding: 8mm 4mm 4mm 4mm;
 		overflow: hidden;
+	}
+
+	table {
+		border-collapse: collapse !important;
+		border-spacing: 0 !important;
+	}
+
+	td.xl71,
+	td.xl72,
+	td.xl73 {
+		border-style: solid !important;
+		border-color: #111 !important;
+		border-width: 0.75pt !important;
 	}
 
 }

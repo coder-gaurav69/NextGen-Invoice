@@ -14,8 +14,8 @@
     <col width=22 style='mso-width-source:userset;mso-width-alt:768;width:16pt'>
     <col width=210 style='mso-width-source:userset;mso-width-alt:8476;width:158pt'>
     <col width=125 style='mso-width-source:userset;width:94pt'>
-    <col width=95 style='mso-width-source:userset;width:71pt'>
-    <col width=91 style='mso-width-source:userset;mso-width-alt:3242;width:68pt'>
+    <col width=90 style='mso-width-source:userset;width:68pt'>
+    <col width=96 style='mso-width-source:userset;mso-width-alt:3242;width:72pt'>
     <col width=66 style='mso-width-source:userset;mso-width-alt:2332;width:49pt'>
     <col width=113 style='mso-width-source:userset;mso-width-alt:4010;width:85pt'>
     <col width=21 style='mso-width-source:userset;mso-width-alt:739;width:16pt'>
@@ -310,35 +310,44 @@
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
       <td class=xl71><span style='mso-spacerun:yes'> </span>ITEM NAME</td>
-      <td class=xl71 style='border-left:none'>BATCH NO</td>
-      <td class=xl71 style='border-left:none'>EXP</td>
-      <td class=xl71 style='border-left:none'>RATE</td>
-      <td class=xl71 style='border-left:none'>QTY</td>
-      <td class=xl71 style='border-left:none'>AMOUNT</td>
+      <td class=xl71>BATCH NO</td>
+      <td class=xl71>EXP</td>
+      <td class=xl71>RATE</td>
+      <td class=xl71>QTY</td>
+      <td class=xl71>AMOUNT</td>
       <td></td>
     </tr>
 
 
 
+    <% const formatExpTitleCase = (value) => {
+      const text = (value || '').toString().trim();
+      if (!text) return '';
+      const [monthPart, yearPart] = text.split('-');
+      if (!monthPart) return text;
+      const normalizedMonth = monthPart.charAt(0).toUpperCase() + monthPart.slice(1).toLowerCase();
+      return yearPart ? `${normalizedMonth}-${yearPart}` : normalizedMonth;
+    }; %>
+
     <% data.map((item)=> { %>
       <tr height=19 style='height:14.4pt'>
         <td height=19 style='height:14.4pt'></td>
-        <td class=xl72 style='border-top:none'>
+        <td class=xl72>
           <%= item.item_name.toUpperCase() %>
         </td>
-        <td class=xl72 style='border-top:none;border-left:none'>
-          <%= item.batch_no %>
+        <td class=xl72>
+          <%= (item.batch_no || '').toUpperCase() %>
         </td>
-        <td class=xl73 style='border-top:none;border-left:none'>
-          <%= item.exp %>
+        <td class=xl73>
+          <%= formatExpTitleCase(item.exp) %>
         </td>
-        <td class=xl72 style='border-top:none;border-left:none'>
+        <td class=xl72>
           <%= item.rate %>
         </td>
-        <td class=xl72 style='border-top:none;border-left:none'>
+        <td class=xl72>
           <%= item.quantity %>
         </td>
-        <td class=xl72 style='border-top:none;border-left:none'>
+        <td class=xl72>
           <%= item.amount %>
         </td>
         <td></td>
@@ -363,7 +372,7 @@
 
               <tr height=19 style='height:14.4pt'>
                 <td height=19 style='height:14.4pt'></td>
-                <td class=xl74>TOTAL AMOUNT<span style='mso-spacerun:yes'></span>-<span style='mso-spacerun:yes'></span>
+                <td class=xl74>TOTAL AMOUNT<span style='mso-spacerun:yes'></span>&ensp;- &ensp;<span style='mso-spacerun:yes'></span>
                 </td>
                 <td colspan=3 class=xl76>
                   <%= total_amount %> /-
@@ -495,8 +504,8 @@
                       <td width=22 style='width:16pt'></td>
                       <td width=210 style='width:158pt'></td>
                       <td width=125 style='width:94pt'></td>
-                      <td width=95 style='width:71pt'></td>
-                      <td width=91 style='width:68pt'></td>
+                      <td width=90 style='width:68pt'></td>
+                      <td width=96 style='width:72pt'></td>
                       <td width=66 style='width:49pt'></td>
                       <td width=113 style='width:85pt'></td>
                       <td width=21 style='width:16pt'></td>
