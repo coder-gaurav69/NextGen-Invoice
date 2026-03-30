@@ -37,8 +37,18 @@ app.use(express.json());
 
 // Home route redirecting to form
 
+const data = [
+    { item_name: 'FOSATED 150MG', batch_no: '134062501A', exp: 'May-27', rate: 3375, quantity: 1, amount: 3375 },
+    { item_name: 'DENOSUREL 120MG', batch_no: 'DMV1B25007', exp: 'Dec-26', rate: 39118, quantity: 2, amount: 78236 },
+    { item_name: 'ONIVYDE 43MG', batch_no: '24173', exp: 'Jan-28', rate: 86710.71, quantity: 2, amount: 173421.42 },
+    { item_name: 'RASCASE 1.5MG', batch_no: 'UOX100125', exp: 'Dec-26', rate: 10890, quantity: 1, amount: 10890 },
+    { item_name: 'PEG F 6MG', batch_no: 'PEG300425', exp: 'Dec-26', rate: 8498.43, quantity: 1, amount: 8498.43 }
+];
+
+
 app.get('/', (req, res) => {
-    res.render("form");
+    // res.render("form");
+    res.render("template",{ data,  date: '2024-06-01', patient_name: 'John Doe', ip_no: '12345', hospital_name: 'PARK HOSPITAL', unit: '(A UNIT OF UMKAL HEALTHCARE PVT.LTD)', address: 'H-BLOCK, PALAM VIHAR, GURGRAM - 122017', gst_no: 'GST NO-06AAACU7727R1ZN', total_amount: 1000 });
 });
 
 // Route to show the form

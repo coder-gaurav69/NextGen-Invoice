@@ -1,6 +1,7 @@
 @page {
-	size: A4;
-	margin: 4mm;
+	size: 210mm 283mm;
+	margin: 0;
+	padding-top:30px;
 }
 
 @media print {
@@ -11,6 +12,17 @@
 		print-color-adjust: exact;
 		-webkit-print-color-adjust: exact;
 	}
+
+	body {
+		/* Keep original visual offset while staying inside a fixed A4 canvas */
+		width: 210mm;
+		height: 297mm;
+		
+		box-sizing: border-box;
+		padding: 8mm 4mm 4mm 4mm;
+		overflow: hidden;
+	}
+
 }
 
 html,
@@ -186,6 +198,7 @@ td {
 .xl74 {
 	mso-style-parent: style0;
 	font-weight: 700;
+	font-size: 11.0pt;
 	font-family: "Bookman Old Style", serif;
 	mso-font-charset: 0;
 	text-align: right;
@@ -209,11 +222,12 @@ td {
 }
 
 .xl77 {
-	mso-style-parent: style0;
-	color: #B4C6E7;
-	font-size: 15.0pt;
-	font-weight: 700;
-	text-align: center;
+    mso-style-parent: style0;
+    color: #B4C6E7;
+    font-size: 15.0pt;
+    font-weight: 700;
+    text-align: center;
+    font-family: Calibri, Arial, sans-serif;
 }
 
 .xl78 {
