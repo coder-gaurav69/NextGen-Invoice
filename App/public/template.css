@@ -14,10 +14,8 @@
 	}
 
 	body {
-		/* Keep original visual offset while staying inside a fixed A4 canvas */
 		width: 210mm;
 		height: 283mm;
-		
 		box-sizing: border-box;
 		padding: 8mm 4mm 4mm 4mm;
 		overflow: hidden;
@@ -31,18 +29,27 @@
 	td.xl71,
 	td.xl72,
 	td.xl73 {
-		border-style: solid !important;
-		border-color: #111 !important;
-		border-width: 0.75pt !important;
+		border-top: 0.75pt solid #111 !important;
+		border-left: 0.75pt solid #111 !important;
+		border-bottom: 0.75pt solid #111 !important;
+		border-right: none !important;
 	}
 
+	td.xl71-last,
+	td.xl72-last,
+	td.xl73-last {
+		border-top: 0.75pt solid #111 !important;
+		border-left: 0.75pt solid #111 !important;
+		border-bottom: 0.75pt solid #111 !important;
+		border-right: 0.75pt solid #111 !important;
+	}
 }
 
 html,
 body {
 	margin: 0;
 	padding: 0;
-	background-color: white; /* Print background fixed to white to eliminate black borders */
+	background-color: white;
 	color-scheme: light;
 	width: 100%;
 	overflow: hidden;
@@ -50,15 +57,16 @@ body {
 
 table {
 	margin: 0 auto !important;
-	position: relative; /* CRITICAL for absolute elements like Logo/Stamp to align correctly */
+	position: relative;
 	float: none !important;
 	display: table !important;
 	background-color: white;
+	border-collapse: collapse;
+	border-spacing: 0;
 }
 
 body {
 	display: block;
-	/* Removed text-align: center to prevent breaking table cell alignments */
 }
 
 table {
@@ -179,6 +187,7 @@ td {
 	mso-char-indent-count: 1;
 }
 
+/* Border cells - left/top/bottom only (no right to avoid double border) */
 .xl71 {
 	mso-style-parent: style0;
 	font-weight: 700;
@@ -186,7 +195,10 @@ td {
 	mso-font-charset: 0;
 	text-align: center;
 	vertical-align: middle;
-	border: 1pt solid #000;
+	border-top: 0.75pt solid #111;
+	border-left: 0.75pt solid #111;
+	border-bottom: 0.75pt solid #111;
+	border-right: none;
 }
 
 .xl72 {
@@ -195,7 +207,10 @@ td {
 	mso-font-charset: 0;
 	text-align: center;
 	vertical-align: middle;
-	border: 1pt solid #000;
+	border-top: 0.75pt solid #111;
+	border-left: 0.75pt solid #111;
+	border-bottom: 0.75pt solid #111;
+	border-right: none;
 }
 
 .xl73 {
@@ -205,7 +220,36 @@ td {
 	mso-number-format: "mmm\/yy";
 	text-align: center;
 	vertical-align: middle;
-	border: 1pt solid #000;
+	border-top: 0.75pt solid #111;
+	border-left: 0.75pt solid #111;
+	border-bottom: 0.75pt solid #111;
+	border-right: none;
+}
+
+/* Last column cells get the closing right border */
+.xl71-last {
+	mso-style-parent: style0;
+	font-weight: 700;
+	font-family: "Bookman Old Style", serif;
+	mso-font-charset: 0;
+	text-align: center;
+	vertical-align: middle;
+	border-top: 0.75pt solid #111;
+	border-left: 0.75pt solid #111;
+	border-bottom: 0.75pt solid #111;
+	border-right: 0.75pt solid #111;
+}
+
+.xl72-last {
+	mso-style-parent: style0;
+	font-family: "Bookman Old Style", serif;
+	mso-font-charset: 0;
+	text-align: center;
+	vertical-align: middle;
+	border-top: 0.75pt solid #111;
+	border-left: 0.75pt solid #111;
+	border-bottom: 0.75pt solid #111;
+	border-right: 0.75pt solid #111;
 }
 
 .xl74 {

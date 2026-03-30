@@ -307,18 +307,18 @@
       <td class=xl66></td>
       <td></td>
     </tr>
+
+    <!-- Table Header Row -->
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl71><span style='mso-spacerun:yes'> </span>ITEM NAME</td>
+      <td class=xl71>ITEM NAME</td>
       <td class=xl71>BATCH NO</td>
       <td class=xl71>EXP</td>
       <td class=xl71>RATE</td>
       <td class=xl71>QTY</td>
-      <td class=xl71>AMOUNT</td>
+      <td class=xl71-last>AMOUNT</td>
       <td></td>
     </tr>
-
-
 
     <% const formatExpTitleCase = (value) => {
       const text = (value || '').toString().trim();
@@ -329,6 +329,7 @@
       return yearPart ? `${normalizedMonth}-${yearPart}` : normalizedMonth;
     }; %>
 
+    <!-- Data Rows -->
     <% data.map((item)=> { %>
       <tr height=19 style='height:14.4pt'>
         <td height=19 style='height:14.4pt'></td>
@@ -347,175 +348,176 @@
         <td class=xl72>
           <%= item.quantity %>
         </td>
-        <td class=xl72>
+        <td class=xl72-last>
           <%= item.amount %>
         </td>
         <td></td>
       </tr>
-      <% }) %>
+    <% }) %>
 
+    <!-- Empty filler rows -->
+    <% const beforeRows = Math.max(0, 10 - data.length) %>
+    <% for(let i = 0; i < beforeRows; i++) { %>
+      <tr height=19 style='height:14.4pt'>
+        <td height=19 style='height:14.4pt'></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td></td>
+      </tr>
+    <% } %>
 
-        <% const beforeRows=Math.max(0, 10 - data.length) %>
-          <%for(let i=0; i < beforeRows; i++) { %>
-            <tr height=19 style='height:14.4pt'>
-              <td height=19 style='height:14.4pt'></td>
-              <td class=xl66></td>
-              <td class=xl66></td>
-              <td class=xl66></td>
-              <td class=xl66></td>
-              <td class=xl66></td>
-              <td class=xl66></td>
-              <td></td>
+    <!-- Total Row -->
+    <tr height=19 style='height:14.4pt'>
+      <td height=19 style='height:14.4pt'></td>
+      <td class=xl74>TOTAL AMOUNT<span style='mso-spacerun:yes'></span>&ensp;- &ensp;<span style='mso-spacerun:yes'></span>
+      </td>
+      <td colspan=3 class=xl76>
+        <%= total_amount %> /-
+      </td>
+      <td class=xl69></td>
+      <td class=xl69></td>
+      <td></td>
+    </tr>
+
+    <!-- After filler rows -->
+    <% const afterRows = 4 %>
+    <% for(let i = 0; i < afterRows; i++) { %>
+      <tr height=19 style='height:14.4pt'>
+        <td height=19 style='height:14.4pt'></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td></td>
+      </tr>
+    <% } %>
+
+    <!-- Stamp + Signatory -->
+    <tr height=19 style='height:14.4pt'>
+      <td height=19 style='height:14.4pt' align=left valign=top><span style='mso-ignore:vglayout;
+         position:absolute;z-index:1;margin-left:12px;margin-top:0px;width:721px;
+         height:133px;'><img width=721 height=133 src=stamp.png
+              v:shapes="Group_x0020_6 Picture_x0020_2 Picture_x0020_5 Straight_x0020_Connector_x0020_3"></span>
+        <![endif]><span style='mso-ignore:vglayout2'>
+          <table cellpadding=0 cellspacing=0>
+            <tr>
+              <td height=19 width=22 style='height:14.4pt;width:16pt'></td>
             </tr>
-            <% } %>
+          </table>
+        </span>
+      </td>
+      <td class=xl75>AUTHORISED SIGNATORY</td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td></td>
+    </tr>
+    <tr height=19 style='height:14.4pt'>
+      <td height=19 style='height:14.4pt'></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td></td>
+    </tr>
+    <tr height=19 style='height:14.4pt'>
+      <td height=19 style='height:14.4pt'></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td></td>
+    </tr>
+    <tr height=19 style='height:14.4pt'>
+      <td height=19 style='height:14.4pt'></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td></td>
+    </tr>
+    <tr height=19 style='height:14.4pt'>
+      <td height=19 style='height:14.4pt'></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td></td>
+    </tr>
+    <!-- <tr height=19 style='height:14.4pt'>
+      <td height=19 style='height:14.4pt'></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td></td>
+    </tr> -->
+    <tr height=19 style='height:14.4pt'>
+      <td height=19 style='height:14.4pt'></td>
+      <td class=xl75>NEXTGEN BIOTECH</td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td></td>
+    </tr>
+    <tr height=19 style='height:14.4pt'>
+      <td height=19 style='height:14.4pt'></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td class=xl66></td>
+      <td></td>
+    </tr>
+    <tr height=21 style='height:15.6pt'>
+      <td height=21 style='height:15.6pt'></td>
+      <td colspan=6 class=xl78>3- DDA Market, Vikrant Enclave, Rajouri Garden New Delhi - 110064</td>
+      <td></td>
+    </tr>
+    <tr height=21 style='height:15.6pt'>
+      <td height=21 style='height:15.6pt'></td>
+      <td colspan=6 class=xl78>GSTIN: 07AAKFN5053A1ZK Ph: 011 - 45084455, 9810901789, 8506099472-75</td>
+      <td></td>
+    </tr>
+    <tr height=21 style='height:15.6pt'>
+      <td height=21 style='height:15.6pt'></td>
+      <td colspan=6 class=xl78>Email: nextgenbiotech14@gmail.com, Website: www.ngbindia.in</td>
+      <td></td>
+    </tr>
 
-
-              <tr height=19 style='height:14.4pt'>
-                <td height=19 style='height:14.4pt'></td>
-                <td class=xl74>TOTAL AMOUNT<span style='mso-spacerun:yes'></span>&ensp;- &ensp;<span style='mso-spacerun:yes'></span>
-                </td>
-                <td colspan=3 class=xl76>
-                  <%= total_amount %> /-
-                </td>
-                <td class=xl69></td>
-                <td class=xl69></td>
-                <td></td>
-              </tr>
-
-              <% const afterRows=4 %>
-                <%for(let i=0; i < afterRows; i++) { %>
-                  <tr height=19 style='height:14.4pt'>
-                    <td height=19 style='height:14.4pt'></td>
-                    <td class=xl66></td>
-                    <td class=xl66></td>
-                    <td class=xl66></td>
-                    <td class=xl66></td>
-                    <td class=xl66></td>
-                    <td class=xl66></td>
-                    <td></td>
-                  </tr>
-                  <% } %>
-
-
-
-
-                    <tr height=19 style='height:14.4pt '>
-                      <td height=19 style='height:14.4pt' align=left valign=top><span style='mso-ignore:vglayout;
-             position:absolute;z-index:1;margin-left:12px;margin-top:0px;width:721px;
-             height:133px;'><img width=721 height=133 src=stamp.png
-                            v:shapes="Group_x0020_6 Picture_x0020_2 Picture_x0020_5 Straight_x0020_Connector_x0020_3"></span>
-                        <![endif]><span style='mso-ignore:vglayout2'>
-                          <table cellpadding=0 cellspacing=0>
-                            <tr>
-                              <td height=19 width=22 style='height:14.4pt;width:16pt'></td>
-                            </tr>
-                          </table>
-                        </span>
-                      </td>
-
-                      <td class=xl75>AUTHORISED SIGNATORY</td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td></td>
-                    </tr>
-                    <tr height=19 style='height:14.4pt'>
-                      <td height=19 style='height:14.4pt'></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td></td>
-                    </tr>
-                    <tr height=19 style='height:14.4pt'>
-                      <td height=19 style='height:14.4pt'></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td></td>
-                    </tr>
-                    <tr height=19 style='height:14.4pt'>
-                      <td height=19 style='height:14.4pt'></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td></td>
-                    </tr>
-                    <tr height=19 style='height:14.4pt'>
-                      <td height=19 style='height:14.4pt'></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td></td>
-                    </tr>
-                    <tr height=19 style='height:14.4pt'>
-                      <td height=19 style='height:14.4pt'></td>
-                      <td class=xl75>NEXTGEN BIOTECH</td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td></td>
-                    </tr>
-                    <tr height=19 style='height:14.4pt'>
-                      <td height=19 style='height:14.4pt'></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td class=xl66></td>
-                      <td></td>
-                    </tr>
-                    <tr height=21 style='height:15.6pt'>
-                      <td height=21 style='height:15.6pt'></td>
-                      <td colspan=6 class=xl78>3- DDA Market, Vikrant Enclave, Rajouri Garden New
-                        Delhi - 110064</td>
-                      <td></td>
-                    </tr>
-                    <tr height=21 style='height:15.6pt'>
-                      <td height=21 style='height:15.6pt'></td>
-                      <td colspan=6 class=xl78>GSTIN: 07AAKFN5053A1ZK Ph: 011 - 45084455,
-                        9810901789, 8506099472-75</td>
-                      <td></td>
-                    </tr>
-                    <tr height=21 style='height:15.6pt'>
-                      <td height=21 style='height:15.6pt'></td>
-                      <td colspan=6 class=xl78>Email: nextgenbiotech14@gmail.com, Website:
-                        www.ngbindia.in</td>
-                      <td></td>
-                    </tr>
-
-                    <tr height=0 style='display:none'>
-                      <td width=22 style='width:16pt'></td>
-                      <td width=210 style='width:158pt'></td>
-                      <td width=125 style='width:94pt'></td>
-                      <td width=90 style='width:68pt'></td>
-                      <td width=96 style='width:72pt'></td>
-                      <td width=66 style='width:49pt'></td>
-                      <td width=113 style='width:85pt'></td>
-                      <td width=21 style='width:16pt'></td>
-                    </tr>
-
-
+    <tr height=0 style='display:none'>
+      <td width=22 style='width:16pt'></td>
+      <td width=210 style='width:158pt'></td>
+      <td width=125 style='width:94pt'></td>
+      <td width=90 style='width:68pt'></td>
+      <td width=96 style='width:72pt'></td>
+      <td width=66 style='width:49pt'></td>
+      <td width=113 style='width:85pt'></td>
+      <td width=21 style='width:16pt'></td>
+    </tr>
 
   </table>
-
-
 
 </body>
 
