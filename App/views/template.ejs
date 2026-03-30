@@ -266,7 +266,8 @@
     </tr>
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl66>GST NO-<%= gst_no || '' %></td>
+      <td class=xl66>GST NO-<%= gst_no || '' %>
+      </td>
       <td class=xl66></td>
       <td class=xl66></td>
       <td class=xl66></td>
@@ -343,7 +344,7 @@
       <% }) %>
 
 
-        <% const beforeRows = Math.max(0, 15 - data.length) %>
+        <% const beforeRows=Math.max(0, 15 - data.length) %>
           <%for(let i=0; i < beforeRows; i++) { %>
             <tr height=19 style='height:14.4pt'>
               <td height=19 style='height:14.4pt'></td>
@@ -369,7 +370,7 @@
                 <td class=xl69></td>
                 <td></td>
               </tr>
-              <% const afterRows = 2 %>
+              <% const afterRows=2 %>
                 <%for(let i=0; i < afterRows; i++) { %>
                   <tr height=19 style='height:14.4pt'>
                     <td height=19 style='height:14.4pt'></td>

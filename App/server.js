@@ -8,6 +8,27 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const BASE_URL = `http://localhost:${PORT}/`;
+
+let browserPromise = null;
+
+function getBrowser() {
+    if (!browserPromise) {
+        browserPromise = puppeteer.launch({
+            headless: true,
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage'
+            ]
+        }).catch((error) => {
+            browserPromise = null;
+            throw error;
+        });
+    }
+
+    return browserPromise;
+}
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -77,30 +98,26 @@ app.post('/generate', async (req, res) => {
                 return res.status(500).send("Error rendering template");
             }
 
-            // 2. Launch Puppeteer with production-safe args to avoid sandbox issues on Heroku/Render
-            const browser = await puppeteer.launch({ 
-                headless: true,
-                args: [
-                    '--no-sandbox', 
-                    '--disable-setuid-sandbox',
-                    '--disable-dev-shm-usage'
-                ]
-            });
+            // 2. Reuse one browser instance for faster PDF generation on server
+            const browser = await getBrowser();
             const page = await browser.newPage();
-            
-            // Inject base URL so relative assets (CSS/Images) can be found
-            const baseUrl = `http://localhost:${PORT}/`;
-            const htmlWithBase = html.replace('<head>', `<head><base href="${baseUrl}">`);
-            
-            await page.setContent(htmlWithBase, { waitUntil: 'networkidle0' });
 
-            const pdfBuffer = await page.pdf({
-                format: 'A4',
-                printBackground: true,
-                margin: { top: '0px', bottom: '0px', left: '0px', right: '0px' }
-            });
+            let pdfBuffer;
+            try {
+                // Inject base URL so relative assets (CSS/Images) can be found
+                const htmlWithBase = html.replace('<head>', `<head><base href="${BASE_URL}">`);
 
-            await browser.close();
+                await page.setContent(htmlWithBase, { waitUntil: 'load' });
+
+                pdfBuffer = await page.pdf({
+                    format: 'A4',
+                    preferCSSPageSize: true,
+                    printBackground: true,
+                    margin: { top: '0px', bottom: '0px', left: '0px', right: '0px' }
+                });
+            } finally {
+                await page.close();
+            }
 
             // 3. Set filename and send PDF
             // Format: Ip no - pt. Name (hospital name - location).pdf
@@ -119,4 +136,24 @@ app.post('/generate', async (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Server is running on port http://localhost:${PORT}`);
+
+    // Warm browser once so first PDF request is faster.
+    getBrowser().catch((error) => {
+        console.error('Browser warm-up failed:', error);
+    });
 });
+
+async function closeBrowserAndExit(signal) {
+    if (browserPromise) {
+        try {
+            const browser = await browserPromise;
+            await browser.close();
+        } catch (error) {
+            console.error('Error closing browser:', error);
+        }
+    }
+    process.exit(0);
+}
+
+process.on('SIGINT', () => closeBrowserAndExit('SIGINT'));
+process.on('SIGTERM', () => closeBrowserAndExit('SIGTERM'));
