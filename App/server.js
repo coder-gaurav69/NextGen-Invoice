@@ -79,12 +79,11 @@ app.post('/generate', async (req, res) => {
 
             // 2. Launch Puppeteer with production-safe args to avoid sandbox issues on Heroku/Render
             const browser = await puppeteer.launch({ 
-                headless: "new",
+                headless: true,
                 args: [
                     '--no-sandbox', 
                     '--disable-setuid-sandbox',
-                    '--disable-dev-shm-usage',
-                    '--single-process'
+                    '--disable-dev-shm-usage'
                 ]
             });
             const page = await browser.newPage();
