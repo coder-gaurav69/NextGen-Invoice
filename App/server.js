@@ -47,8 +47,8 @@ const data = [
 
 
 app.get('/', (req, res) => {
-    // res.render("form");
-    res.render("template",{ data,  date: '2024-06-01', patient_name: 'John Doe', ip_no: '12345', hospital_name: 'PARK HOSPITAL', unit: '(A UNIT OF UMKAL HEALTHCARE PVT.LTD)', address: 'H-BLOCK, PALAM VIHAR, GURGRAM - 122017', gst_no: 'GST NO-06AAACU7727R1ZN', total_amount: 1000 });
+    res.render("form");
+    // res.render("template",{ data,  date: '2024-06-01', patient_name: 'John Doe', ip_no: '12345', hospital_name: 'PARK HOSPITAL', unit: '(A UNIT OF UMKAL HEALTHCARE PVT.LTD)', address: 'H-BLOCK, PALAM VIHAR, GURGRAM - 122017', gst_no: 'GST NO-06AAACU7727R1ZN', total_amount: 1000 });
 });
 
 // Route to show the form
@@ -123,6 +123,7 @@ app.post('/generate', async (req, res) => {
                     format: 'A4',
                     preferCSSPageSize: true,
                     printBackground: true,
+                    pageRanges: '1',
                     margin: { top: '0px', bottom: '0px', left: '0px', right: '0px' }
                 });
             } finally {
