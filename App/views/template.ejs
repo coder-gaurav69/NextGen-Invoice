@@ -6,6 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <link rel="stylesheet" href="template.css">
+  <style>
+    /* Direct override to ensure borders are applied even if CSS is cached */
+    .xl71, .xl72, .xl73, .xl71-last, .xl72-last, .xl73-last {
+      border: 1.8px solid #000 !important;
+    }
+    table {
+      border-collapse: collapse !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -330,30 +339,37 @@
     }; %>
 
     <!-- Data Rows -->
-    <% data.map((item)=> { %>
-      <tr height=19 style='height:14.4pt'>
-        <td height=19 style='height:14.4pt'></td>
-        <td class=xl72>
-          <%= item.item_name.toUpperCase() %>
-        </td>
-        <td class=xl72>
-          <%= (item.batch_no || '').toUpperCase() %>
-        </td>
-        <td class=xl73>
-          <%= formatExpTitleCase(item.exp) %>
-        </td>
-        <td class=xl72>
-          <%= item.rate %>
-        </td>
-        <td class=xl72>
-          <%= item.quantity %>
-        </td>
-        <td class=xl72-last>
-          <%= item.amount %>
-        </td>
-        <td></td>
-      </tr>
-    <% }) %>
+   <% data.map((item, index) => { %>
+<tr height="19" style="height:14.4pt">
+
+  <td></td>
+
+  <td class="xl72">
+    <%= item.item_name.toUpperCase() %>
+  </td>
+
+  <td class="xl72">
+    <%= (item.batch_no || '').toUpperCase() %>
+  </td>
+
+  <td class="xl73">
+    <%= formatExpTitleCase(item.exp) %>
+  </td>
+
+  <td class="xl72">
+    <%= item.rate %>
+  </td>
+
+  <td class="xl72">
+    <%= item.quantity %>
+  </td>
+
+  <td class="xl72-last">
+    <%= item.amount %>
+  </td>
+
+</tr>
+<% }) %>
 
     <!-- Empty filler rows -->
     <% const beforeRows = Math.max(0, 10 - data.length) %>

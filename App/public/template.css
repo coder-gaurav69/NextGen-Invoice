@@ -28,20 +28,11 @@
 
 	td.xl71,
 	td.xl72,
-	td.xl73 {
-		border-top: 0.75pt solid #111 !important;
-		border-left: 0.75pt solid #111 !important;
-		border-bottom: 0.75pt solid #111 !important;
-		border-right: none !important;
-	}
-
+	td.xl73,
 	td.xl71-last,
 	td.xl72-last,
 	td.xl73-last {
-		border-top: 0.75pt solid #111 !important;
-		border-left: 0.75pt solid #111 !important;
-		border-bottom: 0.75pt solid #111 !important;
-		border-right: 0.75pt solid #111 !important;
+		border: 1.8px solid #000 !important;
 	}
 }
 
@@ -195,10 +186,7 @@ td {
 	mso-font-charset: 0;
 	text-align: center;
 	vertical-align: middle;
-	border-top: 0.75pt solid #111;
-	border-left: 0.75pt solid #111;
-	border-bottom: 0.75pt solid #111;
-	border-right: none;
+	border: 1.8px solid #000;
 }
 
 .xl72 {
@@ -207,10 +195,7 @@ td {
 	mso-font-charset: 0;
 	text-align: center;
 	vertical-align: middle;
-	border-top: 0.75pt solid #111;
-	border-left: 0.75pt solid #111;
-	border-bottom: 0.75pt solid #111;
-	border-right: none;
+	border: 1.8px solid #000;
 }
 
 .xl73 {
@@ -220,10 +205,7 @@ td {
 	mso-number-format: "mmm\/yy";
 	text-align: center;
 	vertical-align: middle;
-	border-top: 0.75pt solid #111;
-	border-left: 0.75pt solid #111;
-	border-bottom: 0.75pt solid #111;
-	border-right: none;
+	border: 1.8px solid #000;
 }
 
 /* Last column cells get the closing right border */
@@ -234,10 +216,7 @@ td {
 	mso-font-charset: 0;
 	text-align: center;
 	vertical-align: middle;
-	border-top: 0.75pt solid #111;
-	border-left: 0.75pt solid #111;
-	border-bottom: 0.75pt solid #111;
-	border-right: 0.75pt solid #111;
+	border: 1.8px solid #000;
 }
 
 .xl72-last {
@@ -246,10 +225,7 @@ td {
 	mso-font-charset: 0;
 	text-align: center;
 	vertical-align: middle;
-	border-top: 0.75pt solid #111;
-	border-left: 0.75pt solid #111;
-	border-bottom: 0.75pt solid #111;
-	border-right: 0.75pt solid #111;
+	border: 1.8px solid #000;
 }
 
 .xl74 {
