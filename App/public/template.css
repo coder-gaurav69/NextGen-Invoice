@@ -173,7 +173,7 @@ td {
 	mso-font-charset: 0;
 	text-align: center;
 	vertical-align: middle;
-	border: .5pt solid windowtext;
+	border: 1pt solid #000;
 }
 
 .xl72 {
@@ -182,7 +182,7 @@ td {
 	mso-font-charset: 0;
 	text-align: center;
 	vertical-align: middle;
-	border: .5pt solid windowtext;
+	border: 1pt solid #000;
 }
 
 .xl73 {
@@ -192,7 +192,7 @@ td {
 	mso-number-format: "mmm\/yy";
 	text-align: center;
 	vertical-align: middle;
-	border: .5pt solid windowtext;
+	border: 1pt solid #000;
 }
 
 .xl74 {
