@@ -1,7 +1,7 @@
 @page {
 	size: 210mm 283mm;
 	margin: 0;
-	padding-top:30px;
+	padding-top: 0;
 }
 
 :root {
@@ -35,9 +35,9 @@
 		overflow: hidden;
 	}
 
-	body.is-pdf {
-		padding: 30px 4mm 4mm 4mm;
-	}
+body.is-pdf {
+		padding: 8mm 4mm 2mm 4mm;
+}
 
 	table {
 		border-collapse: collapse !important;
