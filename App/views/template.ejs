@@ -9,6 +9,14 @@
 </head>
 
 <% const isPdf = (typeof is_pdf !== 'undefined') && is_pdf; %>
+<% const escapeHtml = (value = '') => value
+  .toString()
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;'); %>
+<% const renderMultiline = (value = '') => escapeHtml(value).trim().replace(/\r?\n/g, '<br>'); %>
 <body class="<%= isPdf ? 'is-pdf' : '' %>">
   <table border=0 cellpadding=0 cellspacing=0 width=743 style='border-collapse:
  collapse;table-layout:fixed;width:556pt'>
@@ -203,9 +211,7 @@
     </tr>
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl66 colspan=3 style='mso-ignore:colspan'>
-        <%= address || '' %>
-      </td>
+      <td class="xl66 address-block" colspan=3 style='mso-ignore:colspan'><%- renderMultiline(address || '') %></td>
       <td class=xl66></td>
       <td class=xl66></td>
       <td class=xl66></td>
@@ -290,7 +296,7 @@
 <% } %>
 
     <!-- Empty filler rows -->
-    <% const beforeRows = Math.max(0, 10 - data.length) %>
+    <% const beforeRows = Math.max(0, 9 - data.length) %>
     <% for(let i = 0; i < beforeRows; i++) { %>
       <tr height=19 style='height:14.4pt'>
         <td height=19 style='height:14.4pt'></td>

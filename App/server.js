@@ -72,7 +72,8 @@ app.post('/generate', async (req, res) => {
         date, 
         patient_name, 
         ip_no, 
-        hospital_name, 
+        hospital_name,
+        hospital_display,
         custom_hospital_name,
         unit, 
         address, 
@@ -82,7 +83,9 @@ app.post('/generate', async (req, res) => {
         total_amount 
     } = req.body;
 
-    const finalHospitalName = hospital_name === 'Other' ? custom_hospital_name : hospital_name;
+    const finalHospitalName = hospital_name === 'Other'
+        ? custom_hospital_name
+        : (hospital_display || hospital_name);
     const filteredData = Array.isArray(formData) ? formData.filter(item => item.item_name) : [];
 
     const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];

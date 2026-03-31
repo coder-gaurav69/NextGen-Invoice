@@ -40,20 +40,21 @@
                         <label for="hospital_select">Select Hospital</label>
                         <select id="hospital_select" name="hospital_name" required>
                             <option value="">-- Choose Hospital --</option>
-                            <option value="Amar Medical And Research Centre">Amar Medical And Research Centre</option>
-                            <option value="Grecian Hospital">Grecian Hospital</option>
-                            <option value="Healing Touch Hospital">Healing Touch Hospital</option>
-                            <option value="Krishna Super Specility Hospital">Krishna Super Specility Hospital</option>
-                            <option value="Niddan Hospital">Niddan Hospital</option>
-                            <option value="Park Hospital - Delhi">Park Hospital - Delhi</option>
-                            <option value="Park Hospital - Karnal">Park Hospital - Karnal</option>
-                            <option value="Park Hospital - Palam Vihar">Park Hospital - Palam Vihar</option>
-                            <option value="Park Hospital - Panipat">Park Hospital - Panipat</option>
-                            <option value="Park Hospital - Patiala">Park Hospital - Patiala</option>
-                            <option value="Park Hospital - Sector-47">Park Hospital - Sector-47</option>
-                            <option value="The Signature Hospital">The Signature Hospital</option>
+                            <option value="AMAR_MEDICAL">AMAR MEDICAL AND RESEARCH CENTRE</option>
+                            <option value="GRECIAN_HOSPITAL">GRECIAN HOSPITAL</option>
+                            <option value="HEALING_TOUCH_HOSPITAL">HEALING TOUCH HOSPITAL</option>
+                            <option value="KRISHNA_SUPER_SPECILITY_HOSPITAL">KRISHNA SUPER SPECILITY HOSPITAL</option>
+                            <option value="NIDDAN_HOSPITAL">NIDDAN HOSPITAL</option>
+                            <option value="PARK_HOSPITAL_DELHI">PARK HOSPITAL - DELHI</option>
+                            <option value="PARK_HOSPITAL_GT_ROAD">PARK HOSPITAL (GT ROAD)</option>
+                            <option value="PARK_HOSPITAL_PALAM_VIHAR">PARK HOSPITAL - PALAM VIHAR</option>
+                            <option value="PARK_HOSPITAL_PANIPAT">PARK HOSPITAL - PANIPAT</option>
+                            <option value="PARK_HOSPITAL_PATIALA">PARK HOSPITAL (PATIALA)</option>
+                            <option value="PARK_HOSPITAL_SECTOR_47">PARK HOSPITAL - SECTOR-47</option>
+                            <option value="SIGNATURE_HOSPITAL">THE SIGNATURE HOSPITAL</option>
                             <option value="Other">Other</option>
                         </select>
+                        <input type="hidden" id="hospital_display" name="hospital_display" value="">
                     </div>
                     <div class="form-group" id="custom_hospital_group" style="display: none;">
                         <label for="custom_hospital_name">Custom Hospital Name</label>
@@ -132,79 +133,92 @@
 
     <script>
         const hospitalData = {
-            "Amar Medical And Research Centre": {
+            "AMAR_MEDICAL": {
+                displayName: "AMAR MEDICAL AND RESEARCH CENTRE",
                 unit: "(A UNIT OF RATANGIRI INNOVATIONS PVT LTD)",
                 address: "SECTOR-3, KIRAN PATH MANSAROVAR, JAIPUR - 302020",
                 gst: "08AAICR1707N1Z2",
                 location: "Jaipur"
             },
-            "Grecian Hospital": {
+            "GRECIAN_HOSPITAL": {
+                displayName: "GRECIAN HOSPITAL",
                 unit: "(A UNIT OF RGS HEALTH CARE LTD.)",
                 address: "SECTOR-69, SAS NAGAR, MOHALI, PUNJAB",
                 gst: "03AADCR1242B1Z8",
                 location: "Mohali"
             },
-            "Healing Touch Hospital": {
+            "HEALING_TOUCH_HOSPITAL": {
+                displayName: "HEALING TOUCH HOSPITAL",
                 unit: "(A UNIT OF BLUE HEAVENS HEALTHCARE PVT. LTD)",
-                address: "SULTANPUR CHOWK, AMBALA-CHANDIGARH HIGHWAY, AMBALA CITY-134003",
+                address: "SULTANPUR CHOWK\nAMBALA-CHANDIGARH HIGHWAY\nAMBALA CITY-134003",
                 gst: "06AAACB9439P1Z5",
                 location: "Ambala"
             },
-            "Krishna Super Specility Hospital": {
+            "KRISHNA_SUPER_SPECILITY_HOSPITAL": {
+                displayName: "KRISHNA SUPER SPECILITY HOSPITAL",
                 unit: "(A UNIT OF MAHIP HOSPITALS PRIVATE LIMITED)",
-                address: "NEAR SARTAJ PALACE, BATHINDA MANSA ROAD, BATHINDA, PUNJAB",
+                address: "NEAR SARTAJ PALACE, BATHINDA MANSA ROAD\nBATHINDA, PUNJAB",
                 gst: "03AAJCM9924H1ZA",
                 location: "Bathinda"
             },
-            "Niddan Hospital": {
+            "NIDDAN_HOSPITAL": {
+                displayName: "NIDDAN HOSPITAL",
                 unit: "(A UNIT OF NARSING HOSPITAL & HEART INSTITUTE PVT.LTD)",
                 address: "MURTHAL ROAD, SONIPAT, HARYANA-131001",
                 gst: "06AACCN3314M2ZI",
                 location: "Sonipat"
             },
-            "Park Hospital - Delhi": {
+            "PARK_HOSPITAL_DELHI": {
+                displayName: "PARK HOSPITAL",
                 unit: "(A UNIT OF PARK MEDIWORLD PVT.LTD)",
-                address: "12, MEERA ENCLAVE CHOWKHANDI NEAR KESHOPUR BUS DEPOT, WEST DELHI -110018",
+                address: "12, MEERA ENCLAVE CHOWKHANDI NEAR\nKESHOPUR BUS DEPOT, WEST DELHI -110018",
                 gst: "07AAFCP8305H1ZE",
                 location: "Delhi"
             },
-            "Park Hospital - Karnal": {
+            "PARK_HOSPITAL_GT_ROAD": {
+                displayName: "PARK HOSPITAL (GT ROAD)",
                 unit: "(A UNIT OF DMR HOSPITAL PVT.LTD)",
-                address: "CHD CITY, SECTOR-45, GT ROAD, KARNAL, HARYANA 132116",
-                gst: "-",
+                address: "CHD CITY, SECTOR-45, GT ROAD\nKARNAL, HARYANA 06-HARYANA 132116",
+                gst: "",
                 location: "Karnal"
             },
-            "Park Hospital - Palam Vihar": {
+            "PARK_HOSPITAL_PALAM_VIHAR": {
+                displayName: "PARK HOSPITAL",
                 unit: "(A UNIT OF UMKAL HEALTHCARE PVT.LTD)",
                 address: "H-BLOCK, PALAM VIHAR, GURGRAM - 122017",
                 gst: "06AAACU7727R1ZN",
-                location: "Palam Vihar"
+                location: "Gurugram"
             },
-            "Park Hospital - Panipat": {
+            "PARK_HOSPITAL_PANIPAT": {
+                displayName: "PARK HOSPITAL",
                 unit: "(A UNIT OF PARK MEDICITY INDIA PVT.LTD)",
                 address: "NH-1, SEWAH, PANIPAT, HARYANA",
                 gst: "06AAFCP9325H1ZA",
                 location: "Panipat"
             },
-            "Park Hospital - Patiala": {
+            "PARK_HOSPITAL_PATIALA": {
+                displayName: "PARK HOSPITAL (PATIALA)",
                 unit: "(A UNIT OF PARK MEDICITY (WORLD) PVT. LTD)",
-                address: "URBAN ESTATE, PHASE- 1, NEW BUS STAND, PATIALA, PUNJAB 147002",
+                address: "URBAN ESTATE, PHASE- 1,\nNEW BUS STAND, PATIALA, PUNJAB 03-PUNJAB 147002",
                 gst: "03AAJCP0176C1ZV",
                 location: "Patiala"
             },
-            "Park Hospital - Sector-47": {
+            "PARK_HOSPITAL_SECTOR_47": {
+                displayName: "PARK HOSPITAL",
                 unit: "(A UNIT OF PARK MEDICENTERS & INSTITUTIONS P.L)",
-                address: "Q-BLOCK, SOUTH CITY, SOHNA ROAD, SECTOR-47, GURUGRAM-122001",
+                address: "Q-BLOCK, SOUTH CITY, SOHNA ROAD\nSECTOR-47, GURUGRAM-122001",
                 gst: "06AAFCP4102Q1ZA",
-                location: "Sector-47"
+                location: "Gurugram"
             },
-            "The Signature Hospital": {
+            "SIGNATURE_HOSPITAL": {
+                displayName: "THE SIGNATURE HOSPITAL",
                 unit: "(A UNIT OF PARK MEDICITY(NORTH) PVT.LTD)",
-                address: "SECTOR-37D, BPTP DWARKA EXPRESSWAY, GURUGRAM -122001",
+                address: "SECTOR-37D, BPTP DWARKA EXPRESSWAY\nGURUGRAM -122001",
                 gst: "06AAICP8687M1ZH",
                 location: "Gurugram"
             },
             "Other": {
+                displayName: "",
                 unit: "",
                 address: "",
                 gst: "",
@@ -219,6 +233,7 @@
         const addressInput = document.getElementById('address');
         const gstInput = document.getElementById('gst_no');
         const locationInput = document.getElementById('location');
+        const hospitalDisplayInput = document.getElementById('hospital_display');
 
         hospitalSelect.addEventListener('change', (e) => {
             const selected = e.target.value;
@@ -240,11 +255,13 @@
             }
 
             if (hospitalData[selected]) {
+                hospitalDisplayInput.value = hospitalData[selected].displayName || '';
                 unitInput.value = hospitalData[selected].unit;
                 addressInput.value = hospitalData[selected].address;
                 gstInput.value = hospitalData[selected].gst;
                 locationInput.value = hospitalData[selected].location;
             } else {
+                hospitalDisplayInput.value = '';
                 unitInput.value = '';
                 addressInput.value = '';
                 gstInput.value = '';
@@ -261,6 +278,12 @@
                 addressInput.placeholder = "";
                 gstInput.placeholder = "";
                 locationInput.placeholder = "";
+            }
+        });
+
+        customHospitalInput.addEventListener('input', () => {
+            if (hospitalSelect.value === 'Other') {
+                hospitalDisplayInput.value = customHospitalInput.value.trim();
             }
         });
 

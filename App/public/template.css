@@ -134,6 +134,12 @@ td {
 	mso-rotate: 0;
 }
 
+.address-block {
+	white-space: pre-line;
+	vertical-align: top;
+	line-height: 1.1;
+}
+
 .xl65,
 .xl66,
 .xl67,
