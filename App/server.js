@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 const BASE_URL = `http://localhost:${PORT}/`;
-const PDF_RENDER_MODE = process.env.PDF_RENDER_MODE || 'raster'; // raster | vector
+const PDF_RENDER_MODE = process.env.PDF_RENDER_MODE || 'vector'; // raster | vector
 
 let browserPromise = null;
 
@@ -33,6 +33,7 @@ function getBrowser() {
 }
 
 app.set("view engine", "ejs");
+app.set("view cache", false);
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -58,7 +59,7 @@ app.get('/', (req, res) => {
 });
 app.get('/temp', (req, res) => {
     // res.render("form");
-    res.render("template",{ data,  date: '2024-06-01', patient_name: 'John Doe', ip_no: '12345', hospital_name: 'PARK HOSPITAL', unit: '(A UNIT OF UMKAL HEALTHCARE PVT.LTD)', address: 'H-BLOCK, PALAM VIHAR, GURGRAM - 122017', gst_no: 'GST NO-06AAACU7727R1ZN', total_amount: 1000, is_pdf: false });
+    res.render("template",{ data,  date: '2024-06-01', patient_name: 'John Doe', ip_no: '12345', hospital_name: 'PARK HOSPITAL', unit: '(A UNIT OF UMKAL HEALTHCARE PVT.LTD)', address: 'H-BLOCK, PALAM VIHAR, GURGRAM - 122017', gst_no: 'GST NO-06AAACU7727R1ZN', total_amount: 1000, is_pdf: false, css_version: Date.now() });
 });
 
 // Route to show the form
@@ -115,7 +116,8 @@ app.post('/generate', async (req, res) => {
             address, 
             gst_no, 
             total_amount,
-            is_pdf: true
+            is_pdf: true,
+            css_version: Date.now()
         }, async (err, html) => {
             if (err) {
                 console.error("EJS Render Error:", err);
@@ -146,6 +148,7 @@ app.post('/generate', async (req, res) => {
                     : { width: 794, height: 1070, deviceScaleFactor: 1 };
 
                 await page.setViewport(renderViewport);
+                await page.setCacheEnabled(false);
                 await page.setContent(finalHtml, { waitUntil: 'networkidle0' });
                 await page.emulateMediaType('print');
 
@@ -266,6 +269,9 @@ app.post('/generate', async (req, res) => {
             const filename = `${ip_no} - ${cleanPatientName} (${finalHospitalName} - ${location}).pdf`;
 
             res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
             res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
             res.send(pdfBuffer);
         });

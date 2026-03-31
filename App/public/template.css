@@ -6,6 +6,8 @@
 
 :root {
 	--table-border: 1.5px;
+	--semi-bold-weight: 600;
+	--semi-bold-color: #000;
 }
 
 @media print {
@@ -14,7 +16,7 @@
 	}
 
 	body.is-pdf {
-		--table-border: 0.9pt;
+		--table-border: 1.3pt;
 	}
 
 	html,
@@ -93,7 +95,7 @@ tr {
 	font-weight: 400;
 	font-style: normal;
 	text-decoration: none;
-	font-family: Calibri, sans-serif;
+	font-family: "Bookman Old Style", serif;
 	mso-font-charset: 0;
 	border: none;
 	mso-protection: locked visible;
@@ -103,9 +105,10 @@ tr {
 
 .font7,
 .font8 {
-	color: black;
+	color: var(--semi-bold-color);
 	font-size: 11.0pt;
-	font-weight: 700;
+	font-weight: var(--semi-bold-weight);
+	font-synthesis: weight;
 	font-style: normal;
 	text-decoration: none;
 	font-family: "Bookman Old Style", serif;
@@ -121,7 +124,7 @@ td {
 	font-weight: 400;
 	font-style: normal;
 	text-decoration: none;
-	font-family: Calibri, sans-serif;
+	font-family: "Bookman Old Style", serif;
 	mso-font-charset: 0;
 	mso-number-format: General;
 	text-align: general;
@@ -160,7 +163,9 @@ td {
 }
 
 .xl65 {
-	font-weight: 700;
+	font-weight: var(--semi-bold-weight);
+	color: var(--semi-bold-color);
+	font-synthesis: weight;
 }
 
 .xl67 {
@@ -187,7 +192,9 @@ td {
 /* Border cells */
 .xl71,
 .xl71-last {
-	font-weight: 700;
+	font-weight: var(--semi-bold-weight);
+	color: var(--semi-bold-color);
+	font-synthesis: weight;
 	text-align: center;
 	vertical-align: middle;
 	border: var(--table-border) solid #000;
@@ -208,7 +215,9 @@ td {
 }
 
 .xl74 {
-	font-weight: 700;
+	font-weight: var(--semi-bold-weight);
+	color: var(--semi-bold-color);
+	font-synthesis: weight;
 	font-size: 11.0pt;
 	text-align: right;
 	vertical-align: top;
@@ -219,7 +228,9 @@ td {
 }
 
 .xl76 {
-	font-weight: 700;
+	font-weight: var(--semi-bold-weight);
+	color: var(--semi-bold-color);
+	font-synthesis: weight;
 	text-align: left;
 	vertical-align: top;
 }
@@ -228,7 +239,8 @@ td {
     mso-style-parent: style0;
     color: #B4C6E7;
     font-size: 15.0pt;
-    font-weight: 700;
+    font-weight: 600;
+    font-synthesis: none;
     text-align: center;
     font-family: Calibri, Arial, sans-serif;
 }
@@ -237,6 +249,8 @@ td {
 	mso-style-parent: style0;
 	color: #203764;
 	font-size: 12.0pt;
-	font-weight: 700;
+	font-weight: 600;
+	font-synthesis: none;
 	text-align: center;
+	font-family: Calibri, Arial, sans-serif;
 }
