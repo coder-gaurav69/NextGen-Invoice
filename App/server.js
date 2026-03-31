@@ -2,6 +2,7 @@ import express from 'express';
 import puppeteer from 'puppeteer';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,6 +10,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 const BASE_URL = `http://localhost:${PORT}/`;
+const PDF_RENDER_MODE = process.env.PDF_RENDER_MODE || 'raster'; // raster | vector
 
 let browserPromise = null;
 
@@ -56,7 +58,7 @@ app.get('/', (req, res) => {
 });
 app.get('/temp', (req, res) => {
     // res.render("form");
-    res.render("template",{ data,  date: '2024-06-01', patient_name: 'John Doe', ip_no: '12345', hospital_name: 'PARK HOSPITAL', unit: '(A UNIT OF UMKAL HEALTHCARE PVT.LTD)', address: 'H-BLOCK, PALAM VIHAR, GURGRAM - 122017', gst_no: 'GST NO-06AAACU7727R1ZN', total_amount: 1000 });
+    res.render("template",{ data,  date: '2024-06-01', patient_name: 'John Doe', ip_no: '12345', hospital_name: 'PARK HOSPITAL', unit: '(A UNIT OF UMKAL HEALTHCARE PVT.LTD)', address: 'H-BLOCK, PALAM VIHAR, GURGRAM - 122017', gst_no: 'GST NO-06AAACU7727R1ZN', total_amount: 1000, is_pdf: false });
 });
 
 // Route to show the form
@@ -109,7 +111,8 @@ app.post('/generate', async (req, res) => {
             unit, 
             address, 
             gst_no, 
-            total_amount 
+            total_amount,
+            is_pdf: true
         }, async (err, html) => {
             if (err) {
                 console.error("EJS Render Error:", err);
@@ -122,18 +125,134 @@ app.post('/generate', async (req, res) => {
 
             let pdfBuffer;
             try {
-                // Inject base URL so relative assets (CSS/Images) can be found
-                const htmlWithBase = html.replace('<head>', `<head><base href="${BASE_URL}">`);
+                const finalHtml = html.replace(/<head>/i, `<head><base href="${BASE_URL}">`);
+                const PDF_DEBUG = process.env.PDF_DEBUG === '1';
+                const APPLY_GRID_OVERLAY = process.env.PDF_GRID_OVERLAY === '1' || PDF_DEBUG;
+                const PDF_WIDTH_MM = 210;
+                const PDF_HEIGHT_MM = 283;
+                const MM_TO_PT = 72 / 25.4;
+                const PDF_WIDTH_PT = PDF_WIDTH_MM * MM_TO_PT;
+                const PDF_HEIGHT_PT = PDF_HEIGHT_MM * MM_TO_PT;
+                const RASTER_SCALE = 3;
+                const GRID_THICKNESS_PT = Number.parseFloat(
+                    process.env.PDF_GRID_THICKNESS_PT || (PDF_DEBUG ? '3.5' : '1.2')
+                );
 
-                await page.setContent(htmlWithBase, { waitUntil: 'load' });
+                const renderViewport = PDF_RENDER_MODE === 'raster'
+                    ? { width: 794, height: 1070, deviceScaleFactor: RASTER_SCALE }
+                    : { width: 794, height: 1070, deviceScaleFactor: 1 };
 
-                pdfBuffer = await page.pdf({
-                    format: 'A4',
-                    preferCSSPageSize: true,
-                    printBackground: true,
-                    pageRanges: '1',
-                    margin: { top: '0px', bottom: '0px', left: '0px', right: '0px' }
+                await page.setViewport(renderViewport);
+                await page.setContent(finalHtml, { waitUntil: 'networkidle0' });
+                await page.emulateMediaType('print');
+
+                const grid = await page.evaluate(() => {
+                    const cells = Array.from(document.querySelectorAll(
+                        'td.xl71, td.xl72, td.xl73, td.xl71-last, td.xl72-last, td.xl73-last'
+                    ));
+                    if (!cells.length) return null;
+
+                    const round = (v) => Math.round(v * 2) / 2; // 0.5px steps
+                    const xs = [];
+                    const ys = [];
+                    for (const cell of cells) {
+                        const r = cell.getBoundingClientRect();
+                        xs.push(round(r.left), round(r.right));
+                        ys.push(round(r.top), round(r.bottom));
+                    }
+                    xs.sort((a, b) => a - b);
+                    ys.sort((a, b) => a - b);
+                    const uniq = (arr) => arr.filter((v, i) => i === 0 || Math.abs(v - arr[i - 1]) > 0.25);
+                    const ux = uniq(xs);
+                    const uy = uniq(ys);
+                    return {
+                        xs: ux,
+                        ys: uy,
+                        minX: ux[0],
+                        maxX: ux[ux.length - 1],
+                        minY: uy[0],
+                        maxY: uy[uy.length - 1],
+                        viewport: {
+                            width: document.documentElement.scrollWidth,
+                            height: document.documentElement.scrollHeight
+                        }
+                    };
                 });
+
+                const applyGridOverlay = async (doc) => {
+                    if (!APPLY_GRID_OVERLAY || !grid) return doc;
+                    const pdfPage = doc.getPages()[0];
+                    const pdfWidth = pdfPage.getWidth();
+                    const pdfHeight = pdfPage.getHeight();
+                    const scaleX = pdfWidth / grid.viewport.width;
+                    const scaleY = pdfHeight / grid.viewport.height;
+                    const toPdfX = (x) => x * scaleX;
+                    const toPdfY = (y) => pdfHeight - y * scaleY;
+                    const xMin = toPdfX(grid.minX);
+                    const xMax = toPdfX(grid.maxX);
+                    const topY = toPdfY(grid.minY);
+                    const bottomY = toPdfY(grid.maxY);
+                    const lineColor = PDF_DEBUG ? rgb(1, 0, 0) : rgb(0, 0, 0);
+
+                    for (const x of grid.xs) {
+                        const px = toPdfX(x);
+                        pdfPage.drawLine({
+                            start: { x: px, y: topY },
+                            end: { x: px, y: bottomY },
+                            thickness: GRID_THICKNESS_PT,
+                            color: lineColor
+                        });
+                    }
+
+                    for (const y of grid.ys) {
+                        const py = toPdfY(y);
+                        pdfPage.drawLine({
+                            start: { x: xMin, y: py },
+                            end: { x: xMax, y: py },
+                            thickness: GRID_THICKNESS_PT,
+                            color: lineColor
+                        });
+                    }
+
+                    if (PDF_DEBUG) {
+                        const font = await doc.embedFont(StandardFonts.HelveticaBold);
+                        pdfPage.drawText('PDF DEBUG OVERLAY ON', {
+                            x: 24,
+                            y: pdfHeight - 32,
+                            size: 14,
+                            font,
+                            color: rgb(1, 0, 0)
+                        });
+                    }
+
+                    return doc;
+                };
+
+                if (PDF_RENDER_MODE === 'raster') {
+                    const pngBuffer = await page.screenshot({ type: 'png', fullPage: false });
+                    const pdfDoc = await PDFDocument.create();
+                    const pngImage = await pdfDoc.embedPng(pngBuffer);
+                    const pdfPage = pdfDoc.addPage([PDF_WIDTH_PT, PDF_HEIGHT_PT]);
+                    pdfPage.drawImage(pngImage, {
+                        x: 0,
+                        y: 0,
+                        width: PDF_WIDTH_PT,
+                        height: PDF_HEIGHT_PT
+                    });
+                    await applyGridOverlay(pdfDoc);
+                    pdfBuffer = await pdfDoc.save();
+                } else {
+                    pdfBuffer = await page.pdf({
+                        width: '210mm',
+                        height: '283mm',
+                        printBackground: true,
+                        pageRanges: '1',
+                        margin: { top: '0px', bottom: '0px', left: '0px', right: '0px' }
+                    });
+                    const pdfDoc = await PDFDocument.load(pdfBuffer);
+                    await applyGridOverlay(pdfDoc);
+                    pdfBuffer = await pdfDoc.save();
+                }
             } finally {
                 await page.close();
             }

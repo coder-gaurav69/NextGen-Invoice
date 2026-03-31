@@ -6,18 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <link rel="stylesheet" href="template.css">
-  <style>
-    /* Direct override to ensure borders are applied even if CSS is cached */
-    .xl71, .xl72, .xl73, .xl71-last, .xl72-last, .xl73-last {
-      border: 1.8px solid #000 !important;
-    }
-    table {
-      border-collapse: collapse !important;
-    }
-  </style>
 </head>
 
-<body>
+<% const isPdf = (typeof is_pdf !== 'undefined') && is_pdf; %>
+<body class="<%= isPdf ? 'is-pdf' : '' %>">
   <table border=0 cellpadding=0 cellspacing=0 width=743 style='border-collapse:
  collapse;table-layout:fixed;width:556pt'>
     <col width=22 style='mso-width-source:userset;mso-width-alt:768;width:16pt'>
@@ -44,66 +36,18 @@
       <td colspan=6 class=xl77 width=700 style='width:524pt'>PROFORMA INVOICE</td>
       <td width=21 style='width:16pt'></td>
     </tr>
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td></td>
-    </tr>
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td></td>
-    </tr>
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td></td>
-    </tr>
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td></td>
-    </tr>
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td></td>
-    </tr>
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td></td>
-    </tr>
+    <% for (let i = 0; i < 6; i++) { %>
+      <tr height=19 style='height:14.4pt'>
+        <td height=19 style='height:14.4pt'></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td></td>
+      </tr>
+    <% } %>
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
       <td class=xl66></td>
@@ -126,26 +70,18 @@
       <td class=xl66></td>
       <td></td>
     </tr>
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td></td>
-    </tr>
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td></td>
-    </tr>
+    <% for (let i = 0; i < 2; i++) { %>
+      <tr height=19 style='height:14.4pt'>
+        <td height=19 style='height:14.4pt'></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td></td>
+      </tr>
+    <% } %>
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
       <td class=xl66>DL NO. <font class="font7">HRN-115276</font>
@@ -286,36 +222,18 @@
       <td class=xl66></td>
       <td></td>
     </tr>
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td></td>
-    </tr>
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td></td>
-    </tr>
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td></td>
-    </tr>
+    <% for (let i = 0; i < 3; i++) { %>
+      <tr height=19 style='height:14.4pt'>
+        <td height=19 style='height:14.4pt'></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td></td>
+      </tr>
+    <% } %>
 
     <!-- Table Header Row -->
     <tr height=19 style='height:14.4pt'>
@@ -339,7 +257,7 @@
     }; %>
 
     <!-- Data Rows -->
-   <% data.map((item, index) => { %>
+   <% for (const item of data) { %>
 <tr height="19" style="height:14.4pt">
 
   <td></td>
@@ -369,7 +287,7 @@
   </td>
 
 </tr>
-<% }) %>
+<% } %>
 
     <!-- Empty filler rows -->
     <% const beforeRows = Math.max(0, 10 - data.length) %>
@@ -436,46 +354,18 @@
       <td class=xl66></td>
       <td></td>
     </tr>
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td></td>
-    </tr>
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td></td>
-    </tr>
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td></td>
-    </tr>
-    <tr height=19 style='height:14.4pt'>
-      <td height=19 style='height:14.4pt'></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td class=xl66></td>
-      <td></td>
-    </tr>
+    <% for (let i = 0; i < 4; i++) { %>
+      <tr height=19 style='height:14.4pt'>
+        <td height=19 style='height:14.4pt'></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td class=xl66></td>
+        <td></td>
+      </tr>
+    <% } %>
     <!-- <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
       <td class=xl66></td>
