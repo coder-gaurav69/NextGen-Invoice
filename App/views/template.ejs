@@ -9,6 +9,19 @@
 </head>
 
 <% const isPdf = (typeof is_pdf !== 'undefined') && is_pdf; %>
+<% const escapeHtml = (value = '') => value
+  .toString()
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/\"/g, '&quot;')
+  .replace(/'/g, '&#39;'); %>
+<% const renderMultiline = (value = '') => escapeHtml(value).trim().replace(/\r?\n/g, '<br>'); %>
+<% const semiBoldText = (value = '') => {
+  const text = escapeHtml(value || '');
+  if (!text) return '';
+  return `<span style="font-weight:700;color:#000;opacity:0.86;font-synthesis:none;">${text}</span>`;
+}; %>
 <body class="<%= isPdf ? 'is-pdf' : '' %>">
   <table border=0 cellpadding=0 cellspacing=0 width=743 style='border-collapse:
  collapse;table-layout:fixed;width:556pt'>
@@ -84,7 +97,7 @@
     <% } %>
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl66>DL NO. <font class="font7">HRN-115276</font>
+      <td class=xl66>DL NO. <%- semiBoldText('HRN-115276') %>
       </td>
       <td class=xl66></td>
       <td class=xl66></td>
@@ -105,7 +118,7 @@
     </tr>
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl66>GST NO: <font class="font8">07AAKFN5053A1ZK</font>
+      <td class=xl66>GST NO: <%- semiBoldText('07AAKFN5053A1ZK') %>
       </td>
       <td class=xl66></td>
       <td class=xl66></td>
@@ -146,8 +159,8 @@
     </tr>
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl65>PT.&ensp;<span style='mso-spacerun:yes'>
-          <%= patient_name ? patient_name.toUpperCase() : '' %>
+      <td class=xl65><%- semiBoldText('PT.') %>&ensp;<span style='mso-spacerun:yes'>
+          <%- semiBoldText(patient_name ? patient_name.toUpperCase() : '') %>
         </span></td>
       <td class=xl65></td>
       <td class=xl65></td>
@@ -158,8 +171,8 @@
     </tr>
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl65>IP NO.&ensp;<span style='mso-spacerun:yes'>
-          <%= ip_no || '' %>
+      <td class=xl65><%- semiBoldText('IP NO.') %>&ensp;<span style='mso-spacerun:yes'>
+          <%- semiBoldText(ip_no || '') %>
         </span></td>
       <td class=xl65></td>
       <td class=xl65></td>
@@ -181,7 +194,7 @@
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
       <td class=xl65>
-        <%= hospital_name ? hospital_name.toUpperCase() : '' %>
+        <%- semiBoldText(hospital_name ? hospital_name.toUpperCase() : '') %>
       </td>
       <td class=xl66></td>
       <td class=xl66></td>
@@ -203,9 +216,7 @@
     </tr>
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl66 colspan=3 style='mso-ignore:colspan'>
-        <%= address || '' %>
-      </td>
+      <td class="xl66 address-block" colspan=3 style='mso-ignore:colspan'><%- renderMultiline(address || '') %></td>
       <td class=xl66></td>
       <td class=xl66></td>
       <td class=xl66></td>
@@ -238,12 +249,12 @@
     <!-- Table Header Row -->
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl71>ITEM NAME</td>
-      <td class=xl71>BATCH NO</td>
-      <td class=xl71>EXP</td>
-      <td class=xl71>RATE</td>
-      <td class=xl71>QTY</td>
-      <td class=xl71-last>AMOUNT</td>
+      <td class=xl71><%- semiBoldText('ITEM NAME') %></td>
+      <td class=xl71><%- semiBoldText('BATCH NO') %></td>
+      <td class=xl71><%- semiBoldText('EXP') %></td>
+      <td class=xl71><%- semiBoldText('RATE') %></td>
+      <td class=xl71><%- semiBoldText('QTY') %></td>
+      <td class=xl71-last><%- semiBoldText('AMOUNT') %></td>
       <td></td>
     </tr>
 
@@ -307,10 +318,10 @@
     <!-- Total Row -->
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl74>TOTAL AMOUNT<span style='mso-spacerun:yes'></span>&ensp;- &ensp;<span style='mso-spacerun:yes'></span>
+      <td class=xl74 style="font-weight:400;"><%- semiBoldText('TOTAL AMOUNT') %><span style='mso-spacerun:yes'></span>&ensp;- &ensp;<span style='mso-spacerun:yes'></span>
       </td>
-      <td colspan=3 class=xl76>
-        <%= total_amount %> /-
+      <td colspan=3 class=xl76 style="font-weight:400;">
+        <%- semiBoldText(total_amount) %> /-
       </td>
       <td class=xl69></td>
       <td class=xl69></td>
