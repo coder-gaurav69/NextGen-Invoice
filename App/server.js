@@ -9,10 +9,30 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const BASE_URL = `http://localhost:${PORT}/`;
+const BASE_URL = process.env.BASE_URL || `http://127.0.0.1:${PORT}/`;
 const PDF_RENDER_MODE = process.env.PDF_RENDER_MODE || 'vector'; // raster | vector
+const PDF_CONTENT_WAIT_UNTIL = process.env.PDF_CONTENT_WAIT_UNTIL || 'load';
+const PDF_CONTENT_TIMEOUT_MS = Number.parseInt(
+    process.env.PDF_CONTENT_TIMEOUT_MS || '45000',
+    10
+);
+const PDF_NETWORK_IDLE_TIMEOUT_MS = Number.parseInt(
+    process.env.PDF_NETWORK_IDLE_TIMEOUT_MS || '10000',
+    10
+);
 
 let browserPromise = null;
+
+const sanitizeFilenamePart = (value, fallback = '') => {
+    const text = (value ?? '').toString().trim();
+    if (!text) return fallback;
+    const sanitized = text
+        .replace(/[\r\n]+/g, ' ')
+        .replace(/[/\\?%*:|"<>]/g, '-')
+        .replace(/\s+/g, ' ')
+        .trim();
+    return sanitized || fallback;
+};
 
 function getBrowser() {
     if (!browserPromise) {
@@ -124,24 +144,56 @@ app.post('/generate', async (req, res) => {
                 return res.status(500).send("Error rendering template");
             }
 
-            // 2. Reuse one browser instance for faster PDF generation on server
-            const browser = await getBrowser();
-            const page = await browser.newPage();
-
-            let pdfBuffer;
+            let page;
             try {
+                // 2. Reuse one browser instance for faster PDF generation on server
+                const browser = await getBrowser();
+                page = await browser.newPage();
+                page.setDefaultNavigationTimeout(PDF_CONTENT_TIMEOUT_MS);
+                page.setDefaultTimeout(PDF_CONTENT_TIMEOUT_MS);
+
+                await page.evaluateOnNewDocument(() => {
+                    const root = globalThis;
+                    const clearMarks = function clearMarks(markName) {
+                        if (root.performance && typeof root.performance.clearMarks === 'function') {
+                            root.performance.clearMarks(markName);
+                        }
+                    };
+
+                    let mgtRef = (root.mgt && typeof root.mgt === 'object') ? root.mgt : {};
+                    mgtRef.clearMarks = clearMarks;
+
+                    try {
+                        Object.defineProperty(root, 'mgt', {
+                            configurable: true,
+                            get() {
+                                return mgtRef;
+                            },
+                            set(value) {
+                                mgtRef = (value && typeof value === 'object') ? value : {};
+                                mgtRef.clearMarks = clearMarks;
+                            }
+                        });
+                    } catch {
+                        root.mgt = mgtRef;
+                    }
+                });
+
+                let pdfBuffer;
                 const finalHtml = html.replace(/<head>/i, `<head><base href="${BASE_URL}">`);
                 const PDF_DEBUG = process.env.PDF_DEBUG === '1';
-                const APPLY_GRID_OVERLAY = process.env.PDF_GRID_OVERLAY === '1' || PDF_DEBUG;
+                const PDF_GRID_OVERLAY_MODE = (process.env.PDF_GRID_OVERLAY || 'auto').toLowerCase();
+                const APPLY_GRID_OVERLAY = PDF_DEBUG || !['0', 'off', 'false'].includes(PDF_GRID_OVERLAY_MODE);
                 const PDF_WIDTH_MM = 210;
                 const PDF_HEIGHT_MM = 283;
                 const MM_TO_PT = 72 / 25.4;
                 const PDF_WIDTH_PT = PDF_WIDTH_MM * MM_TO_PT;
                 const PDF_HEIGHT_PT = PDF_HEIGHT_MM * MM_TO_PT;
                 const RASTER_SCALE = 3;
-                const GRID_THICKNESS_PT = Number.parseFloat(
-                    process.env.PDF_GRID_THICKNESS_PT || (PDF_DEBUG ? '3.5' : '1.2')
+                const GRID_THICKNESS_PT_OVERRIDE = Number.parseFloat(
+                    process.env.PDF_GRID_THICKNESS_PT || ''
                 );
+                const GRID_THICKNESS_PT_DEFAULT = PDF_DEBUG ? 3.5 : 1.1;
 
                 const renderViewport = PDF_RENDER_MODE === 'raster'
                     ? { width: 794, height: 1070, deviceScaleFactor: RASTER_SCALE }
@@ -149,7 +201,21 @@ app.post('/generate', async (req, res) => {
 
                 await page.setViewport(renderViewport);
                 await page.setCacheEnabled(false);
-                await page.setContent(finalHtml, { waitUntil: 'networkidle0' });
+                await page.setContent(finalHtml, {
+                    waitUntil: PDF_CONTENT_WAIT_UNTIL,
+                    timeout: PDF_CONTENT_TIMEOUT_MS
+                });
+                if (!['networkidle0', 'networkidle2'].includes(PDF_CONTENT_WAIT_UNTIL)) {
+                    try {
+                        await page.waitForNetworkIdle({
+                            idleTime: 500,
+                            timeout: PDF_NETWORK_IDLE_TIMEOUT_MS
+                        });
+                    } catch (error) {
+                        const message = error instanceof Error ? error.message : String(error);
+                        console.warn('PDF render network idle wait skipped:', message);
+                    }
+                }
                 await page.emulateMediaType('print');
 
                 const grid = await page.evaluate(() => {
@@ -171,6 +237,9 @@ app.post('/generate', async (req, res) => {
                     const uniq = (arr) => arr.filter((v, i) => i === 0 || Math.abs(v - arr[i - 1]) > 0.25);
                     const ux = uniq(xs);
                     const uy = uniq(ys);
+                    const sampleCell = cells[0];
+                    const sampleStyle = sampleCell ? window.getComputedStyle(sampleCell) : null;
+                    const borderWidthPx = sampleStyle ? Number.parseFloat(sampleStyle.borderTopWidth) : 0;
                     return {
                         xs: ux,
                         ys: uy,
@@ -178,6 +247,7 @@ app.post('/generate', async (req, res) => {
                         maxX: ux[ux.length - 1],
                         minY: uy[0],
                         maxY: uy[uy.length - 1],
+                        borderWidthPx: Number.isFinite(borderWidthPx) ? borderWidthPx : 0,
                         viewport: {
                             width: document.documentElement.scrollWidth,
                             height: document.documentElement.scrollHeight
@@ -199,13 +269,19 @@ app.post('/generate', async (req, res) => {
                     const topY = toPdfY(grid.minY);
                     const bottomY = toPdfY(grid.maxY);
                     const lineColor = PDF_DEBUG ? rgb(1, 0, 0) : rgb(0, 0, 0);
+                    const derivedThicknessPt = grid.borderWidthPx > 0
+                        ? grid.borderWidthPx * Math.min(scaleX, scaleY)
+                        : 0;
+                    const thicknessPt = Number.isFinite(GRID_THICKNESS_PT_OVERRIDE)
+                        ? GRID_THICKNESS_PT_OVERRIDE
+                        : Math.max(GRID_THICKNESS_PT_DEFAULT, derivedThicknessPt);
 
                     for (const x of grid.xs) {
                         const px = toPdfX(x);
                         pdfPage.drawLine({
                             start: { x: px, y: topY },
                             end: { x: px, y: bottomY },
-                            thickness: GRID_THICKNESS_PT,
+                            thickness: thicknessPt,
                             color: lineColor
                         });
                     }
@@ -215,7 +291,7 @@ app.post('/generate', async (req, res) => {
                         pdfPage.drawLine({
                             start: { x: xMin, y: py },
                             end: { x: xMax, y: py },
-                            thickness: GRID_THICKNESS_PT,
+                            thickness: thicknessPt,
                             color: lineColor
                         });
                     }
@@ -259,25 +335,45 @@ app.post('/generate', async (req, res) => {
                     await applyGridOverlay(pdfDoc);
                     pdfBuffer = await pdfDoc.save();
                 }
+                // 3. Set filename and send PDF
+                // Format: Ip no - pt. Name (hospital name - location).pdf
+                const safeIpNo = sanitizeFilenamePart(ip_no, 'IP');
+                const safePatientName = sanitizeFilenamePart(patient_name, 'Patient');
+                const safeHospitalName = sanitizeFilenamePart(finalHospitalName, '');
+                const safeLocation = sanitizeFilenamePart(location, '');
+                const hospitalPart = safeHospitalName
+                    ? (safeLocation ? `${safeHospitalName} - ${safeLocation}` : safeHospitalName)
+                    : safeLocation;
+                const filename = hospitalPart
+                    ? `${safeIpNo} - ${safePatientName} (${hospitalPart}).pdf`
+                    : `${safeIpNo} - ${safePatientName}.pdf`;
+
+                res.setHeader('Content-Type', 'application/pdf');
+                res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+                res.setHeader('Pragma', 'no-cache');
+                res.setHeader('Expires', '0');
+                res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+                res.send(pdfBuffer);
+            } catch (error) {
+                console.error("PDF Generation Error:", error);
+                if (!res.headersSent) {
+                    res.status(500).send("An error occurred during PDF generation.");
+                }
             } finally {
-                await page.close();
+                if (page) {
+                    try {
+                        await page.close();
+                    } catch (error) {
+                        console.error('Error closing PDF page:', error);
+                    }
+                }
             }
-
-            // 3. Set filename and send PDF
-            // Format: Ip no - pt. Name (hospital name - location).pdf
-            const cleanPatientName = patient_name.replace(/[/\\?%*:|"<>]/g, '-'); // Sanitize for filename
-            const filename = `${ip_no} - ${cleanPatientName} (${finalHospitalName} - ${location}).pdf`;
-
-            res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-            res.setHeader('Pragma', 'no-cache');
-            res.setHeader('Expires', '0');
-            res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-            res.send(pdfBuffer);
         });
     } catch (error) {
         console.error("PDF Generation Error:", error);
-        res.status(500).send("An error occurred during PDF generation.");
+        if (!res.headersSent) {
+            res.status(500).send("An error occurred during PDF generation.");
+        }
     }
 });
 

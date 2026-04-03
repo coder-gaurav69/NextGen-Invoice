@@ -5,18 +5,19 @@
 }
 
 :root {
-	--table-border: 1.5px;
+	/* Slightly heavier borders so PDF download looks "semi-bold" */
+	--table-border: 2.4px;
 	--semi-bold-weight: 600;
 	--semi-bold-color: #000;
 }
 
 @media print {
 	:root {
-		--table-border: 1.4px;
+		--table-border: 2.2px;
 	}
 
 	body.is-pdf {
-		--table-border: 1.3pt;
+		--table-border: 2.2pt;
 	}
 
 	html,
@@ -50,6 +51,16 @@ body.is-pdf {
 	td.xl72-last,
 	td.xl73-last {
 		border: var(--table-border) solid #000 !important;
+	}
+
+	/* Use PDF overlay grid for bold borders; avoid double-thick lines */
+	body.is-pdf td.xl71,
+	body.is-pdf td.xl72,
+	body.is-pdf td.xl73,
+	body.is-pdf td.xl71-last,
+	body.is-pdf td.xl72-last,
+	body.is-pdf td.xl73-last {
+		border: 0 !important;
 	}
 
 }

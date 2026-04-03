@@ -1,9 +1,36 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice Generator</title>
+    <script>
+        (function installMgtClearMarksShim(root) {
+            var clearMarks = function clearMarks(markName) {
+                if (root.performance && typeof root.performance.clearMarks === 'function') {
+                    root.performance.clearMarks(markName);
+                }
+            };
+
+            var mgtRef = (root.mgt && typeof root.mgt === 'object') ? root.mgt : {};
+            mgtRef.clearMarks = clearMarks;
+
+            try {
+                Object.defineProperty(root, 'mgt', {
+                    configurable: true,
+                    get: function getMgt() {
+                        return mgtRef;
+                    },
+                    set: function setMgt(value) {
+                        mgtRef = (value && typeof value === 'object') ? value : {};
+                        mgtRef.clearMarks = clearMarks;
+                    }
+                });
+            } catch (e) {
+                root.mgt = mgtRef;
+            }
+        })(window);
+    </script>
     <link rel="stylesheet" href="/form.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -89,9 +116,9 @@
                                     <th>Medicine Name</th>
                                     <th>Batch No.</th>
                                     <th>Expiry</th>
-                                    <th>Rate (₹)</th>
+                                    <th>Rate (&#8377;)</th>
                                     <th>Qty</th>
-                                    <th>Amount (₹)</th>
+                                    <th>Amount (&#8377;)</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -117,7 +144,7 @@
                     <div class="total-section">
                         <div class="total-label">Grand Total</div>
                         <input type="hidden" name="total_amount" id="total_amount_hidden" value="0.00">
-                        <div class="total-amount">₹<span id="total_amount_display">0.00</span></div>
+                        <div class="total-amount">&#8377;<span id="total_amount_display">0.00</span></div>
                     </div>
                 </div>
             </div>
@@ -299,7 +326,7 @@
                 <td><input type="number" step="0.01" min="0" name="data[${itemIndex}][rate]" class="rate-input" required></td>
                 <td><input type="number" min="1" name="data[${itemIndex}][quantity]" class="qty-input" required></td>
                 <td><input type="number" step="0.01" name="data[${itemIndex}][amount]" class="amount-input" readonly></td>
-                <td><button type="button" class="btn btn-danger" onclick="removeItem(this)">×</button></td>
+                <td><button type="button" class="btn btn-danger" onclick="removeItem(this)">&times;</button></td>
             `;
             tbody.appendChild(row);
             itemIndex++;
@@ -342,3 +369,4 @@
     </script>
 </body>
 </html>
+

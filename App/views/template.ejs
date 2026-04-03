@@ -5,6 +5,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <script>
+    (function installMgtClearMarksShim(root) {
+      var clearMarks = function clearMarks(markName) {
+        if (root.performance && typeof root.performance.clearMarks === 'function') {
+          root.performance.clearMarks(markName);
+        }
+      };
+
+      var mgtRef = (root.mgt && typeof root.mgt === 'object') ? root.mgt : {};
+      mgtRef.clearMarks = clearMarks;
+
+      try {
+        Object.defineProperty(root, 'mgt', {
+          configurable: true,
+          get: function getMgt() {
+            return mgtRef;
+          },
+          set: function setMgt(value) {
+            mgtRef = (value && typeof value === 'object') ? value : {};
+            mgtRef.clearMarks = clearMarks;
+          }
+        });
+      } catch (e) {
+        root.mgt = mgtRef;
+      }
+    })(window);
+  </script>
   <link rel="stylesheet" href="template.css?v=<%= css_version || '1' %>">
 </head>
 
@@ -20,7 +47,7 @@
 <% const semiBoldText = (value = '') => {
   const text = escapeHtml(value || '');
   if (!text) return '';
-  return `<span style="font-weight:700;color:#000;opacity:0.86;font-synthesis:none;">${text}</span>`;
+  return `<span style="font-weight:var(--semi-bold-weight, 600);color:var(--semi-bold-color, #000);opacity:0.86;font-synthesis:weight;">${text}</span>`;
 }; %>
 <body class="<%= isPdf ? 'is-pdf' : '' %>">
   <table border=0 cellpadding=0 cellspacing=0 width=743 style='border-collapse:

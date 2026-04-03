@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
     /* Extreme Premium Dark UI */
@@ -9,8 +9,8 @@
     --bg-input: rgba(11, 17, 32, 0.6); /* deeply recessed inputs */
     --bg-hover: #334155;     /* slate-700 */
     
-    --border-soft: rgba(255, 255, 255, 0.08); /* ultra-subtle borders */
-    --border-strong: rgba(255, 255, 255, 0.15);
+    --border-soft: rgba(255, 255, 255, 0.14); /* ultra-subtle borders */
+    --border-strong: rgba(255, 255, 255, 0.24);
     --border-focus: #38bdf8; /* sky-400 */
     
     --text-primary: #f8fafc; /* slate-50 */
@@ -521,9 +521,9 @@ td input.amount-input {
     .item-row td:nth-child(1)::before { content: "Medicine Name"; }
     .item-row td:nth-child(2)::before { content: "Batch No."; }
     .item-row td:nth-child(3)::before { content: "Expiry (MM-YYYY)"; }
-    .item-row td:nth-child(4)::before { content: "Rate (₹)"; }
+    .item-row td:nth-child(4)::before { content: "Rate (\20B9)"; }
     .item-row td:nth-child(5)::before { content: "Quantity"; }
-    .item-row td:nth-child(6)::before { content: "Amount (₹)"; }
+    .item-row td:nth-child(6)::before { content: "Amount (\20B9)"; }
     
     .item-row td::before {
         font-size: 0.75rem;
