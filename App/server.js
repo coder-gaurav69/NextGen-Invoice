@@ -193,7 +193,7 @@ app.post('/generate', async (req, res) => {
                 const GRID_THICKNESS_PT_OVERRIDE = Number.parseFloat(
                     process.env.PDF_GRID_THICKNESS_PT || ''
                 );
-                const GRID_THICKNESS_PT_DEFAULT = PDF_DEBUG ? 3.5 : 1.1;
+                const GRID_THICKNESS_PT_DEFAULT = PDF_DEBUG ? 3.5 : 1.0;
 
                 const renderViewport = PDF_RENDER_MODE === 'raster'
                     ? { width: 794, height: 1070, deviceScaleFactor: RASTER_SCALE }

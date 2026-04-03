@@ -49,6 +49,21 @@
   if (!text) return '';
   return `<span style="font-weight:var(--semi-bold-weight, 600);color:var(--semi-bold-color, #000);opacity:0.86;font-synthesis:weight;">${text}</span>`;
 }; %>
+<% const formatDateDMY = (value = '') => {
+  const text = (value || '').toString().trim();
+  if (!text) return '';
+  // If already dd-mm-yyyy, keep as-is.
+  if (/^\d{2}-\d{2}-\d{4}$/.test(text)) return text;
+  // Handle yyyy-mm-dd or yyyy/mm/dd
+  const m = text.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
+  if (m) {
+    const year = m[1];
+    const month = m[2].padStart(2, '0');
+    const day = m[3].padStart(2, '0');
+    return `${day}-${month}-${year}`;
+  }
+  return text;
+}; %>
 <body class="<%= isPdf ? 'is-pdf' : '' %>">
   <table border=0 cellpadding=0 cellspacing=0 width=743 style='border-collapse:
  collapse;table-layout:fixed;width:556pt'>
@@ -96,7 +111,7 @@
       <td class=xl66></td>
       <td class=xl67>DATE -</td>
       <td class=xl68>
-        <%= date %>
+        <%= formatDateDMY(date) %>
       </td>
       <td></td>
     </tr>
@@ -186,9 +201,7 @@
     </tr>
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl66><%- semiBoldText('PT.') %>&ensp;<span style='mso-spacerun:yes'>
-          <%- semiBoldText(patient_name ? patient_name.toUpperCase() : '') %>
-        </span></td>
+      <td class=xl66><%- semiBoldText('PT.') %> <%- semiBoldText(patient_name ? patient_name.toUpperCase() : '') %></td>
       <td class=xl66></td>
       <td class=xl66></td>
       <td class=xl66></td>
@@ -198,9 +211,7 @@
     </tr>
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl66><%- semiBoldText('IP NO.') %>&ensp;<span style='mso-spacerun:yes'>
-          <%- semiBoldText(ip_no || '') %>
-        </span></td>
+      <td class=xl66><%- semiBoldText('IP NO.') %> <%- semiBoldText(ip_no || '') %></td>
       <td class=xl66></td>
       <td class=xl66></td>
       <td class=xl66></td>
@@ -345,7 +356,7 @@
     <!-- Total Row -->
     <tr height=19 style='height:14.4pt'>
       <td height=19 style='height:14.4pt'></td>
-      <td class=xl74 style="font-weight:400;"><%- semiBoldText('TOTAL AMOUNT') %><span style='mso-spacerun:yes'></span>&ensp;- &ensp;<span style='mso-spacerun:yes'></span>
+      <td class=xl74 style="font-weight:400;"><%- semiBoldText('TOTAL AMOUNT') %><span style='mso-spacerun:yes'></span>&nbsp;- &nbsp;<span style='mso-spacerun:yes'></span>
       </td>
       <td colspan=3 class=xl76 style="font-weight:400;">
         <%- semiBoldText(total_amount) %> /-
