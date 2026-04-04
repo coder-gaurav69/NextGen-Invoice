@@ -225,6 +225,14 @@ app.post('/generate', async (req, res) => {
                                 font-family: "Bookman Old Style";
                                 src: url('${BASE_URL}fonts/BOOKOS.woff2') format('woff2');
                                 font-style: normal;
+                                font-weight: 550;
+                                font-display: block;
+                            }
+
+                            @font-face {
+                                font-family: "Bookman Old Style";
+                                src: url('${BASE_URL}fonts/BOOKOS.woff2') format('woff2');
+                                font-style: normal;
                                 font-weight: 700;
                                 font-display: block;
                             }
@@ -233,7 +241,7 @@ app.post('/generate', async (req, res) => {
                                 font-family: "Calibri";
                                 src: url('${BASE_URL}fonts/Calibri.woff2') format('woff2');
                                 font-style: normal;
-                                font-weight: 400;
+                                font-weight: 600;
                                 font-display: block;
                             }
 
