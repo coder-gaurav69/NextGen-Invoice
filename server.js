@@ -20,6 +20,7 @@ const PDF_NETWORK_IDLE_TIMEOUT_MS = Number.parseInt(
     process.env.PDF_NETWORK_IDLE_TIMEOUT_MS || '10000',
     10
 );
+const PDF_PRODUCTION_MODE = process.env.PDF_PRODUCTION_MODE === '1';
 
 let browserPromise = null;
 
@@ -205,6 +206,44 @@ app.post('/generate', async (req, res) => {
                     waitUntil: PDF_CONTENT_WAIT_UNTIL,
                     timeout: PDF_CONTENT_TIMEOUT_MS
                 });
+                if (PDF_PRODUCTION_MODE) {
+                    await page.addStyleTag({
+                        content: `
+                            body, td, .style0, .font7, .font8, .xl65, .xl66, .xl67, .xl68, .xl69, .xl70, .xl71, .xl72, .xl73, .xl71-last, .xl72-last, .xl74, .xl75, .xl76 {
+                                font-family: "Bookman Old Style", "Bookman", "URW Bookman L", "Nimbus Roman", "Times New Roman", serif !important;
+                            }
+                        `
+                    });
+
+                    await page.evaluate(async () => {
+                        const waitForImages = async () => {
+                            const images = Array.from(document.images || []);
+                            await Promise.all(images.map((image) => {
+                                if (image.complete) return Promise.resolve();
+                                return new Promise((resolve) => {
+                                    image.addEventListener('load', resolve, { once: true });
+                                    image.addEventListener('error', resolve, { once: true });
+                                });
+                            }));
+                        };
+
+                        try {
+                            if (document.fonts && typeof document.fonts.ready?.then === 'function') {
+                                await document.fonts.ready;
+                            }
+                        } catch {
+                            // Continue on browsers that don't expose document.fonts reliably.
+                        }
+
+                        await waitForImages();
+
+                        await new Promise((resolve) => {
+                            requestAnimationFrame(() => {
+                                requestAnimationFrame(resolve);
+                            });
+                        });
+                    });
+                }
                 if (!['networkidle0', 'networkidle2'].includes(PDF_CONTENT_WAIT_UNTIL)) {
                     try {
                         await page.waitForNetworkIdle({
