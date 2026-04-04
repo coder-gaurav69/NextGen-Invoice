@@ -1,0 +1,417 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator</title>
+    <script>
+        (function installMgtClearMarksShim(root) {
+            var clearMarks = function clearMarks(markName) {
+                if (root.performance && typeof root.performance.clearMarks === 'function') {
+                    root.performance.clearMarks(markName);
+                }
+            };
+
+            var mgtRef = (root.mgt && typeof root.mgt === 'object') ? root.mgt : {};
+            mgtRef.clearMarks = clearMarks;
+
+            try {
+                Object.defineProperty(root, 'mgt', {
+                    configurable: true,
+                    get: function getMgt() {
+                        return mgtRef;
+                    },
+                    set: function setMgt(value) {
+                        mgtRef = (value && typeof value === 'object') ? value : {};
+                        mgtRef.clearMarks = clearMarks;
+                    }
+                });
+            } catch (e) {
+                root.mgt = mgtRef;
+            }
+        })(window);
+    </script>
+    <link rel="stylesheet" href="/form.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NextGen Invoice</h1>
+            <p class="subtitle">Quickly generate professional proforma invoices</p>
+        </header>
+        
+        <form action="/generate" method="POST">
+            <div class="section">
+                <h2 class="section-title">General Details</h2>
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="date">Invoice Date</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="patient_name">Patient Name</label>
+                        <input type="text" id="patient_name" name="patient_name" placeholder="Enter patient name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ip_no">IP Number</label>
+                        <input type="text" id="ip_no" name="ip_no" placeholder="e.g. 102345" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Hospital Details</h2>
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="hospital_select">Select Hospital</label>
+                        <select id="hospital_select" name="hospital_name" required>
+                            <option value="">-- Choose Hospital --</option>
+                            <option value="AMAR_MEDICAL">AMAR MEDICAL AND RESEARCH CENTRE</option>
+                            <option value="GRECIAN_HOSPITAL">GRECIAN HOSPITAL</option>
+                            <option value="HEALING_TOUCH_HOSPITAL">HEALING TOUCH HOSPITAL</option>
+                            <option value="KRISHNA_SUPER_SPECILITY_HOSPITAL">KRISHNA SUPER SPECILITY HOSPITAL</option>
+                            <option value="NIDDAN_HOSPITAL">NIDDAN HOSPITAL</option>
+                            <option value="PARK_HOSPITAL_DELHI">PARK HOSPITAL - DELHI</option>
+                            <option value="PARK_HOSPITAL_GT_ROAD">PARK HOSPITAL (GT ROAD)</option>
+                            <option value="PARK_HOSPITAL_PALAM_VIHAR">PARK HOSPITAL - PALAM VIHAR</option>
+                            <option value="PARK_HOSPITAL_PANIPAT">PARK HOSPITAL - PANIPAT</option>
+                            <option value="PARK_HOSPITAL_PATIALA">PARK HOSPITAL (PATIALA)</option>
+                            <option value="PARK_HOSPITAL_SECTOR_47">PARK HOSPITAL - SECTOR-47</option>
+                            <option value="SIGNATURE_HOSPITAL">THE SIGNATURE HOSPITAL</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="hidden" id="hospital_display" name="hospital_display" value="">
+                    </div>
+                    <div class="form-group" id="custom_hospital_group" style="display: none;">
+                        <label for="custom_hospital_name">Custom Hospital Name</label>
+                        <input type="text" id="custom_hospital_name" name="custom_hospital_name" placeholder="Enter hospital name">
+                    </div>
+                    <div class="form-group">
+                        <label for="unit">Parent Unit</label>
+                        <input type="text" id="unit" name="unit" readonly placeholder="Auto-filled from selection">
+                    </div>
+                    <div class="form-group">
+                        <label for="gst_no">GST Number</label>
+                        <input type="text" id="gst_no" name="gst_no" readonly placeholder="Auto-filled from selection">
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" readonly placeholder="Auto-filled from selection">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <label for="address">Full Address</label>
+                    <textarea id="address" name="address" rows="2" readonly placeholder="Auto-filled from selection"></textarea>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Medicine & Item List</h2>
+                <div class="items-table-container">
+                    <div class="table-wrapper">
+                        <table id="items_table">
+                            <thead>
+                                <tr>
+                                    <th>Medicine Name</th>
+                                    <th>Batch No.</th>
+                                    <th>Expiry</th>
+                                    <th>Rate (&#8377;)</th>
+                                    <th>Qty</th>
+                                    <th>Amount (&#8377;)</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="items_tbody">
+                                <tr class="item-row">
+                                    <td><input type="text" name="data[0][item_name]" required placeholder="Medicine Name"></td>
+                                    <td><input type="text" name="data[0][batch_no]" required placeholder="B123..."></td>
+                                    <td><input type="month" name="data[0][exp]" required></td>
+                                    <td><input type="number" step="0.01" min="0" name="data[0][rate]" class="rate-input" required placeholder="0.00"></td>
+                                    <td><input type="number" min="1" name="data[0][quantity]" class="qty-input" required placeholder="0"></td>
+                                    <td><input type="text" inputmode="decimal" name="data[0][amount]" class="amount-input" readonly value="0"></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <button type="button" class="btn btn-secondary" onclick="addItem()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        Add New Item
+                    </button>
+                    
+                    <div class="total-section">
+                        <div class="total-label">Grand Total</div>
+                        <input type="hidden" name="total_amount" id="total_amount_hidden" value="0.00">
+                        <div class="total-amount">&#8377;<span id="total_amount_display">0.00</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="submit-container">
+                <button type="submit" class="btn btn-primary submit-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9l-7-7z" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 2v7h7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Generate Professional Invoice
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const hospitalData = {
+            "AMAR_MEDICAL": {
+                displayName: "AMAR MEDICAL AND RESEARCH CENTRE",
+                unit: "(A UNIT OF RATANGIRI INNOVATIONS PVT LTD)",
+                address: "SECTOR-3, KIRAN PATH MANSAROVAR, JAIPUR - 302020",
+                gst: "08AAICR1707N1Z2",
+                location: "Jaipur"
+            },
+            "GRECIAN_HOSPITAL": {
+                displayName: "GRECIAN HOSPITAL",
+                unit: "(A UNIT OF RGS HEALTH CARE LTD.)",
+                address: "SECTOR-69, SAS NAGAR, MOHALI, PUNJAB",
+                gst: "03AADCR1242B1Z8",
+                location: "Mohali"
+            },
+            "HEALING_TOUCH_HOSPITAL": {
+                displayName: "HEALING TOUCH HOSPITAL",
+                unit: "(A UNIT OF BLUE HEAVENS HEALTHCARE PVT. LTD)",
+                address: "SULTANPUR CHOWK\nAMBALA-CHANDIGARH HIGHWAY\nAMBALA CITY-134003",
+                gst: "06AAACB9439P1Z5",
+                location: "Ambala"
+            },
+            "KRISHNA_SUPER_SPECILITY_HOSPITAL": {
+                displayName: "KRISHNA SUPER SPECILITY HOSPITAL",
+                unit: "(A UNIT OF MAHIP HOSPITALS PRIVATE LIMITED)",
+                address: "NEAR SARTAJ PALACE, BATHINDA MANSA ROAD\nBATHINDA, PUNJAB",
+                gst: "03AAJCM9924H1ZA",
+                location: "Bathinda"
+            },
+            "NIDDAN_HOSPITAL": {
+                displayName: "NIDDAN HOSPITAL",
+                unit: "(A UNIT OF NARSING HOSPITAL & HEART INSTITUTE PVT.LTD)",
+                address: "MURTHAL ROAD, SONIPAT, HARYANA-131001",
+                gst: "06AACCN3314M2ZI",
+                location: "Sonipat"
+            },
+            "PARK_HOSPITAL_DELHI": {
+                displayName: "PARK HOSPITAL",
+                unit: "(A UNIT OF PARK MEDIWORLD PVT.LTD)",
+                address: "12, MEERA ENCLAVE CHOWKHANDI NEAR\nKESHOPUR BUS DEPOT, WEST DELHI -110018",
+                gst: "07AAFCP8305H1ZE",
+                location: "Delhi"
+            },
+            "PARK_HOSPITAL_GT_ROAD": {
+                displayName: "PARK HOSPITAL (GT ROAD)",
+                unit: "(A UNIT OF DMR HOSPITAL PVT.LTD)",
+                address: "CHD CITY, SECTOR-45, GT ROAD\nKARNAL, HARYANA 06-HARYANA 132116",
+                gst: "",
+                location: "Karnal"
+            },
+            "PARK_HOSPITAL_PALAM_VIHAR": {
+                displayName: "PARK HOSPITAL",
+                unit: "(A UNIT OF UMKAL HEALTHCARE PVT.LTD)",
+                address: "H-BLOCK, PALAM VIHAR, GURGRAM - 122017",
+                gst: "06AAACU7727R1ZN",
+                location: "Gurugram"
+            },
+            "PARK_HOSPITAL_PANIPAT": {
+                displayName: "PARK HOSPITAL",
+                unit: "(A UNIT OF PARK MEDICITY INDIA PVT.LTD)",
+                address: "NH-1, SEWAH, PANIPAT, HARYANA",
+                gst: "06AAFCP9325H1ZA",
+                location: "Panipat"
+            },
+            "PARK_HOSPITAL_PATIALA": {
+                displayName: "PARK HOSPITAL (PATIALA)",
+                unit: "(A UNIT OF PARK MEDICITY (WORLD) PVT. LTD)",
+                address: "URBAN ESTATE, PHASE- 1,\nNEW BUS STAND, PATIALA, PUNJAB 03-PUNJAB 147002",
+                gst: "03AAJCP0176C1ZV",
+                location: "Patiala"
+            },
+            "PARK_HOSPITAL_SECTOR_47": {
+                displayName: "PARK HOSPITAL",
+                unit: "(A UNIT OF PARK MEDICENTERS & INSTITUTIONS P.L)",
+                address: "Q-BLOCK, SOUTH CITY, SOHNA ROAD\nSECTOR-47, GURUGRAM-122001",
+                gst: "06AAFCP4102Q1ZA",
+                location: "Gurugram"
+            },
+            "SIGNATURE_HOSPITAL": {
+                displayName: "THE SIGNATURE HOSPITAL",
+                unit: "(A UNIT OF PARK MEDICITY(NORTH) PVT.LTD)",
+                address: "SECTOR-37D, BPTP DWARKA EXPRESSWAY\nGURUGRAM -122001",
+                gst: "06AAICP8687M1ZH",
+                location: "Gurugram"
+            },
+            "Other": {
+                displayName: "",
+                unit: "",
+                address: "",
+                gst: "",
+                location: ""
+            }
+        };
+
+        const hospitalSelect = document.getElementById('hospital_select');
+        const customHospitalGroup = document.getElementById('custom_hospital_group');
+        const customHospitalInput = document.getElementById('custom_hospital_name');
+        const unitInput = document.getElementById('unit');
+        const addressInput = document.getElementById('address');
+        const gstInput = document.getElementById('gst_no');
+        const locationInput = document.getElementById('location');
+        const hospitalDisplayInput = document.getElementById('hospital_display');
+
+        hospitalSelect.addEventListener('change', (e) => {
+            const selected = e.target.value;
+            const isOther = selected === 'Other';
+            
+            // Toggle Readonly based on 'Other' selection
+            unitInput.readOnly = !isOther;
+            addressInput.readOnly = !isOther;
+            gstInput.readOnly = !isOther;
+            locationInput.readOnly = !isOther;
+
+            // Toggle custom name group
+            customHospitalGroup.style.display = isOther ? 'flex' : 'none';
+            if (isOther) {
+                customHospitalInput.required = true;
+            } else {
+                customHospitalInput.required = false;
+                customHospitalInput.value = '';
+            }
+
+            if (hospitalData[selected]) {
+                hospitalDisplayInput.value = hospitalData[selected].displayName || '';
+                unitInput.value = hospitalData[selected].unit;
+                addressInput.value = hospitalData[selected].address;
+                gstInput.value = hospitalData[selected].gst;
+                locationInput.value = hospitalData[selected].location;
+            } else {
+                hospitalDisplayInput.value = '';
+                unitInput.value = '';
+                addressInput.value = '';
+                gstInput.value = '';
+                locationInput.value = '';
+            }
+
+            if (isOther) {
+                unitInput.placeholder = "Enter Unit details";
+                addressInput.placeholder = "Enter full Address";
+                gstInput.placeholder = "Enter GST Number";
+                locationInput.placeholder = "Enter Location/City";
+            } else {
+                unitInput.placeholder = "";
+                addressInput.placeholder = "";
+                gstInput.placeholder = "";
+                locationInput.placeholder = "";
+            }
+        });
+
+        customHospitalInput.addEventListener('input', () => {
+            if (hospitalSelect.value === 'Other') {
+                hospitalDisplayInput.value = customHospitalInput.value.trim();
+            }
+        });
+
+        let itemIndex = 1;
+        function addItem() {
+            const tbody = document.getElementById('items_tbody');
+            const row = document.createElement('tr');
+            row.classList.add('item-row');
+            row.innerHTML = `
+                <td><input type="text" name="data[${itemIndex}][item_name]" required></td>
+                <td><input type="text" name="data[${itemIndex}][batch_no]" required></td>
+                <td><input type="month" name="data[${itemIndex}][exp]" required></td>
+                <td><input type="number" step="0.01" min="0" name="data[${itemIndex}][rate]" class="rate-input" required></td>
+                <td><input type="number" min="1" name="data[${itemIndex}][quantity]" class="qty-input" required></td>
+                <td><input type="text" inputmode="decimal" name="data[${itemIndex}][amount]" class="amount-input" readonly></td>
+                <td><button type="button" class="btn btn-danger" onclick="removeItem(this)">&times;</button></td>
+            `;
+            tbody.appendChild(row);
+            itemIndex++;
+            attachListeners(row);
+        }
+
+        function removeItem(btn) {
+            btn.closest('tr').remove();
+            calculateTotal();
+        }
+
+        function getDecimalsFromString(value) {
+            const text = (value || '').toString();
+            const dotIndex = text.indexOf('.');
+            if (dotIndex === -1) return 0;
+            return Math.max(0, text.length - dotIndex - 1);
+        }
+
+        function clampDecimals(value) {
+            if (!Number.isFinite(value)) return 0;
+            return Math.min(2, Math.max(0, value));
+        }
+
+        function formatNumber(value, decimals) {
+            const safeDecimals = clampDecimals(decimals);
+            return Number(value).toFixed(safeDecimals);
+        }
+
+        function stripZeroFraction(value) {
+            const text = (value || '').toString();
+            const dotIndex = text.indexOf('.');
+            if (dotIndex === -1) return { value: text, decimals: 0 };
+            const integerPart = text.slice(0, dotIndex);
+            const fractionalPart = text.slice(dotIndex + 1);
+            if (!fractionalPart || /^0+$/.test(fractionalPart)) {
+                return { value: integerPart, decimals: 0 };
+            }
+            return { value: text, decimals: fractionalPart.length };
+        }
+
+        function calculateAmount(row) {
+            const rateInput = row.querySelector('.rate-input');
+            const qtyInput = row.querySelector('.qty-input');
+            const amountInput = row.querySelector('.amount-input');
+
+            const rateRaw = rateInput.value || '';
+            const rateDecimals = clampDecimals(getDecimalsFromString(rateRaw));
+            const rate = parseFloat(rateRaw) || 0;
+            const qty = parseFloat(qtyInput.value) || 0;
+            const amount = rate * qty;
+
+            const formattedAmount = formatNumber(amount, rateDecimals);
+            const normalizedAmount = stripZeroFraction(formattedAmount);
+            amountInput.value = normalizedAmount.value;
+            amountInput.dataset.decimals = String(normalizedAmount.decimals);
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            let total = 0;
+            let maxDecimals = 0;
+            document.querySelectorAll('.amount-input').forEach(input => {
+                total += parseFloat(input.value) || 0;
+                const decimals = clampDecimals(
+                    Number.parseInt(input.dataset.decimals || getDecimalsFromString(input.value), 10)
+                );
+                if (decimals > maxDecimals) maxDecimals = decimals;
+            });
+            const formattedTotal = formatNumber(total, maxDecimals);
+            const normalizedTotal = stripZeroFraction(formattedTotal);
+            document.getElementById('total_amount_display').innerText = normalizedTotal.value;
+            document.getElementById('total_amount_hidden').value = normalizedTotal.value;
+        }
+
+        function attachListeners(row) {
+            row.querySelector('.rate-input').addEventListener('input', () => calculateAmount(row));
+            row.querySelector('.qty-input').addEventListener('input', () => calculateAmount(row));
+        }
+
+        // Initial listener for the first row
+        attachListeners(document.querySelector('.item-row'));
+        
+        // Default today's date
+        document.getElementById('date').valueAsDate = new Date();
+    </script>
+</body>
+</html>
+

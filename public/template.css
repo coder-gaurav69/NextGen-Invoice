@@ -1,0 +1,267 @@
+@page {
+	size: 210mm 283mm;
+	margin: 0;
+	padding-top: 0;
+}
+
+:root {
+	/* Slightly heavier borders so PDF download looks "semi-bold" */
+	--table-border: 2.4px;
+	--semi-bold-weight: 600;
+	--semi-bold-color: #000;
+}
+
+@media print {
+	:root {
+		--table-border: 2.2px;
+	}
+
+	body.is-pdf {
+		--table-border: 2.2pt;
+	}
+
+	html,
+	body {
+		background: #fff !important;
+		color-scheme: light;
+		print-color-adjust: exact;
+		-webkit-print-color-adjust: exact;
+	}
+
+	body {
+		width: 210mm;
+		height: 283mm;
+		box-sizing: border-box;
+		padding: 8mm 4mm 4mm 4mm;
+		overflow: hidden;
+	}
+
+body.is-pdf {
+		padding: 8mm 4mm 2mm 4mm;
+}
+
+	table {
+		border-collapse: collapse !important;
+	}
+
+	td.xl71,
+	td.xl72,
+	td.xl73,
+	td.xl71-last,
+	td.xl72-last,
+	td.xl73-last {
+		border: var(--table-border) solid #000 !important;
+	}
+
+	/* Use PDF overlay grid for bold borders; avoid double-thick lines */
+	body.is-pdf td.xl71,
+	body.is-pdf td.xl72,
+	body.is-pdf td.xl73,
+	body.is-pdf td.xl71-last,
+	body.is-pdf td.xl72-last,
+	body.is-pdf td.xl73-last {
+		border: 0 !important;
+	}
+
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	background-color: white;
+	color-scheme: light;
+	width: 100%;
+	overflow: hidden;
+}
+
+table {
+	margin: 0 auto !important;
+	position: relative;
+	float: none !important;
+	display: table !important;
+	background-color: white;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+body {
+	display: block;
+}
+
+tr {
+	mso-height-source: auto;
+}
+
+.style0 {
+	mso-number-format: General;
+	text-align: general;
+	vertical-align: bottom;
+	white-space: nowrap;
+	mso-rotate: 0;
+	mso-background-source: auto;
+	mso-pattern: auto;
+	color: black;
+	font-size: 11.0pt;
+	font-weight: 400;
+	font-style: normal;
+	text-decoration: none;
+	font-family: "Bookman Old Style", serif;
+	mso-font-charset: 0;
+	border: none;
+	mso-protection: locked visible;
+	mso-style-name: Normal;
+	mso-style-id: 0;
+}
+
+.font7,
+.font8 {
+	color: var(--semi-bold-color);
+	font-size: 11.0pt;
+	font-weight: var(--semi-bold-weight);
+	font-synthesis: weight;
+	font-style: normal;
+	text-decoration: none;
+	font-family: "Bookman Old Style", serif;
+	mso-font-charset: 0;
+}
+
+td {
+	mso-style-parent: style0;
+	padding: 0px;
+	mso-ignore: padding;
+	color: black;
+	font-size: 11.0pt;
+	font-weight: 400;
+	font-style: normal;
+	text-decoration: none;
+	font-family: "Bookman Old Style", serif;
+	mso-font-charset: 0;
+	mso-number-format: General;
+	text-align: general;
+	vertical-align: bottom;
+	border: none;
+	mso-background-source: auto;
+	mso-pattern: auto;
+	mso-protection: locked visible;
+	white-space: nowrap;
+	mso-rotate: 0;
+}
+
+.address-block {
+	white-space: pre-line;
+	vertical-align: top;
+	line-height: 1.1;
+}
+
+.xl65,
+.xl66,
+.xl67,
+.xl68,
+.xl69,
+.xl70,
+.xl71,
+.xl72,
+.xl73,
+.xl71-last,
+.xl72-last,
+.xl74,
+.xl75,
+.xl76 {
+	mso-style-parent: style0;
+	font-family: "Bookman Old Style", serif;
+	mso-font-charset: 0;
+}
+
+.xl65 {
+	font-weight: var(--semi-bold-weight);
+	color: var(--semi-bold-color);
+	font-synthesis: weight;
+}
+
+.xl67 {
+	text-align: right;
+}
+
+.xl68 {
+	mso-number-format: "\[$-14009\]dd\/mm\/yyyy\;\@";
+	text-align: left;
+	vertical-align: middle;
+}
+
+.xl69 {
+	text-align: center;
+	vertical-align: middle;
+}
+
+.xl70 {
+	text-align: left;
+	padding-left: 12px;
+	mso-char-indent-count: 1;
+}
+
+/* Border cells */
+.xl71,
+.xl71-last {
+	font-weight: var(--semi-bold-weight);
+	color: var(--semi-bold-color);
+	font-synthesis: weight;
+	text-align: center;
+	vertical-align: middle;
+	border: var(--table-border) solid #000;
+}
+
+.xl72,
+.xl72-last {
+	text-align: center;
+	vertical-align: middle;
+	border: var(--table-border) solid #000;
+}
+
+.xl73 {
+	mso-number-format: "mmm\/yy";
+	text-align: center;
+	vertical-align: middle;
+	border: var(--table-border) solid #000;
+}
+
+.xl74 {
+	font-weight: var(--semi-bold-weight);
+	color: var(--semi-bold-color);
+	font-synthesis: weight;
+	font-size: 11.0pt;
+	text-align: right;
+	vertical-align: top;
+}
+
+.xl75 {
+	text-align: center;
+}
+
+.xl76 {
+	font-weight: var(--semi-bold-weight);
+	color: var(--semi-bold-color);
+	font-synthesis: weight;
+	text-align: left;
+	vertical-align: top;
+}
+
+.xl77 {
+    mso-style-parent: style0;
+    color: #B4C6E7;
+    font-size: 15.0pt;
+	font-weight: 600;
+	font-synthesis: none;
+    text-align: center;
+    font-family: Calibri, Arial, sans-serif;
+}
+
+.xl78 {
+	mso-style-parent: style0;
+	color: #203764;
+	font-size: 12.0pt;
+	font-weight: 600;
+	font-synthesis: none;
+	text-align: center;
+	font-family: Calibri, Arial, sans-serif;
+}
