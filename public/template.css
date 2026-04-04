@@ -1,3 +1,27 @@
+@font-face {
+	font-family: "Bookman Old Style";
+	src: url("/fonts/BOOKOS.woff2") format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: block;
+}
+
+@font-face {
+	font-family: "Bookman Old Style";
+	src: url("/fonts/BOOKOS.woff2") format("woff2");
+	font-weight: 550;
+	font-style: normal;
+	font-display: block;
+}
+
+@font-face {
+	font-family: "Calibri";
+	src: url("/fonts/Calibri.woff2") format("woff2");
+	font-weight: 600;
+	font-style: normal;
+	font-display: block;
+}
+
 @page {
 	size: 210mm 283mm;
 	margin: 0;
