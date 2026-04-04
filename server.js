@@ -213,8 +213,43 @@ app.post('/generate', async (req, res) => {
                 if (PDF_PRODUCTION_MODE) {
                     await page.addStyleTag({
                         content: `
+                            @font-face {
+                                font-family: "Bookman Old Style";
+                                src: url('${BASE_URL}fonts/BOOKOS.woff2') format('woff2');
+                                font-style: normal;
+                                font-weight: 400;
+                                font-display: block;
+                            }
+
+                            @font-face {
+                                font-family: "Bookman Old Style";
+                                src: url('${BASE_URL}fonts/BOOKOS.woff2') format('woff2');
+                                font-style: normal;
+                                font-weight: 700;
+                                font-display: block;
+                            }
+
+                            @font-face {
+                                font-family: "Calibri";
+                                src: url('${BASE_URL}fonts/Calibri.woff2') format('woff2');
+                                font-style: normal;
+                                font-weight: 400;
+                                font-display: block;
+                            }
+
                             body, td, .style0, .font7, .font8, .xl65, .xl66, .xl67, .xl68, .xl69, .xl70, .xl71, .xl72, .xl73, .xl71-last, .xl72-last, .xl74, .xl75, .xl76 {
                                 font-family: "Bookman Old Style", "Bookman", "URW Bookman L", "Nimbus Roman", "Times New Roman", serif !important;
+                                font-synthesis: weight !important;
+                            }
+
+                            span[style*="Bookman Old Style"] {
+                                font-family: "Bookman Old Style", "Bookman", "URW Bookman L", "Nimbus Roman", "Times New Roman", serif !important;
+                                font-synthesis: weight !important;
+                            }
+
+                            .xl77,
+                            .xl78 {
+                                font-family: "Calibri", Arial, sans-serif !important;
                             }
                         `
                     });

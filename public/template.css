@@ -4,22 +4,6 @@
 	padding-top: 0;
 }
 
-@font-face {
-	font-family: "Bookman Old Style";
-	src: local("Bookman Old Style"), url('/fonts/BOOKOS.woff2') format('woff2');
-	font-style: normal;
-	font-weight: 400;
-	font-display: block;
-}
-
-@font-face {
-	font-family: "Calibri";
-	src: local("Calibri"), url('/fonts/Calibri.woff2') format('woff2');
-	font-style: normal;
-	font-weight: 400;
-	font-display: block;
-}
-
 :root {
 	/* Slightly heavier borders so PDF download looks "semi-bold" */
 	--table-border: 2.4px;
