@@ -47,7 +47,12 @@
 <% const semiBoldText = (value = '') => {
   const text = escapeHtml(value || '');
   if (!text) return '';
-  return `<span style="font-weight:var(--semi-bold-weight, 600);color:var(--semi-bold-color, #000);opacity:0.86;font-synthesis:weight;">${text}</span>`;
+  return `<span style="font-family:'Bookman Old Style',serif;font-weight:var(--semi-bold-weight, 550);color:var(--semi-bold-color, #000);opacity:0.88;font-synthesis:weight;">${text}</span>`;
+}; %>
+<% const strictBookmanText = (value = '') => {
+  const text = escapeHtml(value || '');
+  if (!text) return '';
+  return `<span style="font-family:'Bookman Old Style',serif;font-weight:400;color:#000;">${text}</span>`;
 }; %>
 <% const formatDateDMY = (value = '') => {
   const text = (value || '').toString().trim();
@@ -111,7 +116,7 @@
       <td class=xl66></td>
       <td class=xl67>DATE - &nbsp;</td>
       <td class=xl68>
-        <%= formatDateDMY(date) %>
+        <%- strictBookmanText(formatDateDMY(date)) %>
       </td>
       <td></td>
     </tr>
