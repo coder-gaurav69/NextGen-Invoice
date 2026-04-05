@@ -36,18 +36,18 @@ function sanitizeFileNamePart(value, fallback = "NA") {
 }
 
 const MONTHS = [
-  "JAN",
-  "FEB",
-  "MAR",
-  "APR",
-  "MAY",
-  "JUN",
-  "JUL",
-  "AUG",
-  "SEP",
-  "OCT",
-  "NOV",
-  "DEC",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 function formatExpiry(value) {
@@ -75,7 +75,7 @@ function formatExpiry(value) {
 
   const monYear = raw.match(/^(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)[-\s/]?(\d{2,4})$/);
   if (monYear) {
-    const mon = monYear[1];
+    const mon = `${monYear[1][0]}${monYear[1].slice(1).toLowerCase()}`;
     const yearText = monYear[2];
     const year = yearText.length === 2 ? 2000 + Number(yearText) : Number(yearText);
     if (Number.isFinite(year)) {
