@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tailwind Config Font Test</title>
+    <title>Invoice</title>
+
     <link rel="stylesheet" href="/tw.css?v=20260405">
 
     <style>
@@ -19,11 +20,170 @@
             print-color-adjust: exact;
         }
 
-        body.is-pdf .invoice-table,
-        body.is-pdf .invoice-table th,
-        body.is-pdf .invoice-table td {
-            border-width: 1.5px !important;
-        }
+        /* ================= GRID FIX (FINAL) ================= */
+.invoice-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}
+
+/* RESET */
+.invoice-table th,
+.invoice-table td {
+    padding: 2px;
+    box-shadow: none;
+}
+
+/* 🔥 STEP 1: ALL CELLS GET LEFT + TOP */
+.invoice-table th,
+.invoice-table td {
+    box-shadow:
+        inset 1px 0 0 black,   /* LEFT */
+        inset 0 1px 0 black;   /* TOP */
+}
+
+/* 🔥 STEP 2: LAST COLUMN ADD RIGHT */
+.invoice-table tr > *:last-child {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset 0 1px 0 black,
+        inset -1px 0 0 black; /* RIGHT */
+}
+
+/* 🔥 STEP 3: LAST ROW ADD BOTTOM */
+.invoice-table tbody tr:last-child > * {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset 0 1px 0 black,
+        inset 0 -1px 0 black; /* BOTTOM */
+}
+
+/* 🔥 STEP 4: FIX CORNER (last row + last col) */
+.invoice-table tbody tr:last-child > *:last-child {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset 0 1px 0 black,
+        inset -1px 0 0 black,
+        inset 0 -1px 0 black;
+}
+
+/* 🔥 STEP 5: HEADER BOTTOM LINE FIX
+   tbody first row ka top remove kiya tha jisse header bottom thin ho gayi thi
+   is liye thead last row pe explicitly bottom add kar rahe hain */
+.invoice-table thead tr:last-child > * {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset 0 1px 0 black,
+        inset 0 -1px 0 black; /* BOTTOM */
+}
+
+.invoice-table thead tr:last-child > *:last-child {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset 0 1px 0 black,
+        inset -1px 0 0 black,
+        inset 0 -1px 0 black; /* RIGHT + BOTTOM */
+}
+
+/* 🔥 STEP 6: tbody FIRST ROW TOP REMOVE
+   header bottom + first row top dono hone se double/thick line banti thi */
+.invoice-table tbody tr:first-child > * {
+    box-shadow:
+        inset 1px 0 0 black; /* sirf LEFT, top hataya */
+}
+
+.invoice-table tbody tr:first-child > *:last-child {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset -1px 0 0 black; /* LEFT + RIGHT, top hataya */
+}
+
+/* 🔥 STEP 6 EDGE CASE: single data row (first = last) */
+.invoice-table tbody tr:first-child:last-child > * {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset 0 -1px 0 black; /* LEFT + BOTTOM */
+}
+
+.invoice-table tbody tr:first-child:last-child > *:last-child {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset -1px 0 0 black,
+        inset 0 -1px 0 black; /* LEFT + RIGHT + BOTTOM */
+}
+
+/* ✅ PDF SAFE (NO DECIMALS EVER) */
+body.is-pdf .invoice-table th,
+body.is-pdf .invoice-table td {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset 0 1px 0 black;
+}
+
+body.is-pdf .invoice-table tr > *:last-child {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset 0 1px 0 black,
+        inset -1px 0 0 black;
+}
+
+body.is-pdf .invoice-table tbody tr:last-child > * {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset 0 1px 0 black,
+        inset 0 -1px 0 black;
+}
+
+body.is-pdf .invoice-table tbody tr:last-child > *:last-child {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset 0 1px 0 black,
+        inset -1px 0 0 black,
+        inset 0 -1px 0 black;
+}
+
+/* ✅ PDF SAFE: HEADER BOTTOM LINE FIX */
+body.is-pdf .invoice-table thead tr:last-child > * {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset 0 1px 0 black,
+        inset 0 -1px 0 black;
+}
+
+body.is-pdf .invoice-table thead tr:last-child > *:last-child {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset 0 1px 0 black,
+        inset -1px 0 0 black,
+        inset 0 -1px 0 black;
+}
+
+/* ✅ PDF SAFE: tbody FIRST ROW TOP REMOVE */
+body.is-pdf .invoice-table tbody tr:first-child > * {
+    box-shadow:
+        inset 1px 0 0 black;
+}
+
+body.is-pdf .invoice-table tbody tr:first-child > *:last-child {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset -1px 0 0 black;
+}
+
+/* ✅ PDF SAFE: single data row edge case */
+body.is-pdf .invoice-table tbody tr:first-child:last-child > * {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset 0 -1px 0 black;
+}
+
+body.is-pdf .invoice-table tbody tr:first-child:last-child > *:last-child {
+    box-shadow:
+        inset 1px 0 0 black,
+        inset -1px 0 0 black,
+        inset 0 -1px 0 black;
+}
+        /* ================= OTHER ================= */
 
         .invoice-stamp-block {
             transform: scale(1.09);
@@ -37,144 +197,140 @@
     </style>
 </head>
 
-<body class="<%= is_pdf ? 'is-pdf ' : '' %>font-bookman overflow-scroll text-[12pt]">
+<body class="<%= is_pdf ? 'is-pdf ' : '' %> font-bookman text-[12pt]">
 
-    <header class="text-center font-calibri-bold text-[15pt] text-[#b4c6e7] ">PROFORMA INVOICE</header>
+    <header class="text-center font-calibri-bold text-[16pt] text-[#b4c6e7]">
+        PROFORMA INVOICE
+    </header>
 
     <div>
-        <img src="./logo.png" alt="image" width=202 height=137>
+        <img src="/logo.png" width="202" height="137">
     </div>
 
-    <div class="w-full flex items-center justify-end pr-8">
-        <p>Date - <%= date %>
-        </p>
+    <div class="w-full flex justify-end pr-8">
+        <p>DATE - <%= date || '' %></p>
     </div>
 
-    <% for (let i=0; i < 4; i++) { %>
+    <% for (let i = 0; i < 4; i++) { %>
         <div class="h-[12pt]"></div>
-        <% } %>
+    <% } %>
 
+    <div class="flex flex-col">
+        <div class="flex gap-2">
+            <p>DL NO.</p>
+            <p class="font-bookman-bold"><%= dl_no %></p>
+        </div>
 
-            <div class="flex flex-col">
-                <div class="flex gap-2">
-                    <p class="">DL NO.</p>
-                    <p class="font-bookman-bold">
-                        <%= dl_no %>
-                    </p>
-                </div>
-                <p>&ensp; ,HRN-115277.</p>
-                <div class="flex gap-2">
-                    <p>GST NO:</p>
-                    <p class="font-bookman-bold">
-                        <%= gst_no %>
-                    </p>
+        <p>&ensp; ,HRN-115277.</p>
+
+        <div class="flex gap-2">
+            <p>GST NO:</p>
+            <p class="font-bookman-bold"><%= gst_no %></p>
+        </div>
+    </div>
+
+    <div class="h-[12pt]"></div>
+
+    <p>TO</p>
+
+    <div class="h-[12pt]"></div>
+
+    <div class="flex flex-col font-bookman-bold">
+        <div class="flex gap-2">
+            <p>PT.</p>
+            <p><%= patient_name %></p>
+        </div>
+
+        <div class="flex gap-2">
+            <p>IP NO.</p>
+            <p><%= ip_no %></p>
+        </div>
+    </div>
+
+    <div class="h-[12pt]"></div>
+
+    <div>
+        <p class="font-bookman-bold"><%= hospital_name %></p>
+        <p><%= unit %></p>
+        <p><%= address %></p>
+
+        <div class="flex gap-2">
+            <p>GST NO:</p>
+            <p><%= gst_no %></p>
+        </div>
+    </div>
+
+    <% for (let i = 0; i < 4; i++) { %>
+        <div class="h-[12pt]"></div>
+    <% } %>
+
+    <!-- ================= TABLE ================= -->
+    <table class="invoice-table text-center text-[11pt] font-bookman leading-none">
+        <thead>
+            <tr>
+                <th>ITEM NAME</th>
+                <th>BATCH NO</th>
+                <th>EXP</th>
+                <th>RATE</th>
+                <th>QTY</th>
+                <th>AMOUNT</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% if (Array.isArray(data) && data.length > 0) { %>
+                <% data.forEach(item => { %>
+                    <tr>
+                        <td><%= item.item_name %></td>
+                        <td><%= item.batch_no %></td>
+                        <td><%= item.exp %></td>
+                        <td><%= item.rate %></td>
+                        <td><%= item.quantity %></td>
+                        <td><%= item.amount %></td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="6">No items added</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+
+    <% for (let i = 0; i < 8; i++) { %>
+        <div class="h-[12pt]"></div>
+    <% } %>
+
+    <div class="flex gap-2 font-bookman-bold relative left-[10%]">
+        <p>TOTAL AMOUNT -</p>
+        <p><%= total_amount %> /-</p>
+    </div>
+
+    <% for (let i = 0; i < 4; i++) { %>
+        <div class="h-[11pt]"></div>
+    <% } %>
+
+    <!-- ================= STAMP ================= -->
+    <div class="absolute bottom-1 w-full">
+        <div class="flex flex-col items-center text-[12pt]">
+
+            <div class="relative invoice-stamp-block">
+                <img src="/stamp.png" width="721" height="133">
+
+                <div class="absolute top-[-2px]">
+                    <p class="relative left-[10px]">AUTHORISED SIGNATORY</p>
+                    <p class="relative top-[75px] left-[50px]">NEXTGEN BIOTECH</p>
                 </div>
             </div>
-            <div class="h-[12pt]"></div>
-            <p>TO</p>
-            <div class="h-[12pt]"></div>
 
-            <div class="flex flex-col font-bookman-bold">
-                <div class="flex gap-2">
-                    <p>PT.</p>
-                    <p>
-                        <%= patient_name %>
-                    </p>
-                </div>
-                <div class="flex gap-2">
-                    <p>IP NO.</p>
-                    <p>
-                        <%= ip_no %>
-                    </p>
-                </div>
-            </div>
-            <div class="h-[12pt]"></div>
-            <div>
-                <p class="font-bookman-bold">
-                    <%= hospital_name %>
-                </p>
-                <p>
-                    <%= unit %>
-                </p>
-                <p>
-                    <%= address %>
-                </p>
-
-                <div class="flex gap-2">
-                    <p>GST NO:</p>
-                    <p>
-                        <%= gst_no %>
-                    </p>
-                </div>
+            <div class="invoice-footer-copy text-center pt-4 text-[#203764] font-calibri-bold text-[13pt]">
+                <p>3- DDA Market, Vikrant Enclave, Rajouri Garden New Delhi - 110064</p>
+                <p>GSTIN: 07AAKFN5053A1ZK Ph: 011 - 45084455, 9810901789</p>
+                <p>Email: nextgenbiotech14@gmail.com, Website: www.ngbindia.in</p>
             </div>
 
-            <% for (let i=0; i < 4; i++) { %>
-                <div class="h-[12pt]"></div>
-                <% } %>
-
-                    <table
-                        class="invoice-table w-full border border-black border-collapse text-center text-[11pt] font-bookman leading-none">
-                        <thead>
-                            <tr>
-                                <th class="border border-black px-2 py-[2px]">ITEM NAME</th>
-                                <th class="border border-black px-2 py-[2px]">BATCH NO</th>
-                                <th class="border border-black px-2 py-[2px]">EXP</th>
-                                <th class="border border-black px-2 py-[2px]">RATE</th>
-                                <th class="border border-black px-2 py-[2px]">QTY</th>
-                                <th class="border border-black px-2 py-[2px]">AMOUNT</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr>
-                                <td class="border border-black px-2 py-[2px]">PEG F 6MG</td>
-                                <td class="border border-black px-2 py-[2px]">PEG300425</td>
-                                <td class="border border-black px-2 py-[2px]">Dec-26</td>
-                                <td class="border border-black px-2 py-[2px]">8498.43</td>
-                                <td class="border border-black px-2 py-[2px]">1</td>
-                                <td class="border border-black px-2 py-[2px]">8498.43</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <% for (let i=0; i < 8; i++) { %>
-                        <div class="h-[12pt]"></div>
-                        <% } %>
-
-                            <div class="flex gap-2 font-bookman-bold relative left-[10%]">
-                                <p>TOTAL AMOUNT -</p>
-                                <p>
-                                    <%= total_amount %> /-
-                                </p>
-                            </div>
-
-                            <% for (let i=0; i < 4; i++) { %>
-                                <div class="h-[11pt]"></div>
-                                <% } %>
-
-
-                                    <div class="absolute bottom-1 w-full">
-                                        <div class="flex flex-col justify-center items-center text-[12pt]">
-                                            <div class="relative invoice-stamp-block">
-                                                <img class="relative" src="./stamp.png" alt="img" width=721 height=133>
-                                                <div class="absolute top-[-2px]">
-                                                    <p class="relative left-[10px]">AUTHORISED SIGNATORY</p>
-                                                    <p class="relative top-[75px] left-[50px]">NEXTGEN BIOTECH</p>
-                                                </div>
-                                            </div>
-
-                                            <div
-                                                class="invoice-footer-copy flex flex-col text-center pt-4 text-[#203764] font-calibri-bold text-[13pt] leading-[1.1]">
-                                                <p>3- DDA Market, Vikrant Enclave, Rajouri Garden New Delhi - 110064</p>
-                                                <p>GSTIN: 07AAKFN5053A1ZK Ph: 011 - 45084455, 9810901789, 8506099472-75
-                                                </p>
-                                                <p>Email: nextgenbiotech14@gmail.com, Website: www.ngbindia.in</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
+        </div>
+    </div>
 
 </body>
-
 </html>
