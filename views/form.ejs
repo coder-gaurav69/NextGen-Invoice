@@ -126,7 +126,7 @@
                                 <tr class="item-row">
                                     <td><input type="text" name="data[0][item_name]" required placeholder="Medicine Name"></td>
                                     <td><input type="text" name="data[0][batch_no]" required placeholder="B123..."></td>
-                                    <td><input type="month" name="data[0][exp]" required></td>
+                                    <td><input type="text" name="data[0][exp]" required placeholder="MAY-25" maxlength="7" pattern="^(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)-\d{2}$" title="Use format like MAY-25"></td>
                                     <td><input type="number" step="0.01" min="0" name="data[0][rate]" class="rate-input" required placeholder="0.00"></td>
                                     <td><input type="number" min="1" name="data[0][quantity]" class="qty-input" required placeholder="0"></td>
                                     <td><input type="text" inputmode="decimal" name="data[0][amount]" class="amount-input" readonly value="0"></td>
@@ -322,7 +322,7 @@
             row.innerHTML = `
                 <td><input type="text" name="data[${itemIndex}][item_name]" required></td>
                 <td><input type="text" name="data[${itemIndex}][batch_no]" required></td>
-                <td><input type="month" name="data[${itemIndex}][exp]" required></td>
+                <td><input type="text" name="data[${itemIndex}][exp]" required placeholder="MAY-25" maxlength="7" pattern="^(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)-\d{2}$" title="Use format like MAY-25"></td>
                 <td><input type="number" step="0.01" min="0" name="data[${itemIndex}][rate]" class="rate-input" required></td>
                 <td><input type="number" min="1" name="data[${itemIndex}][quantity]" class="qty-input" required></td>
                 <td><input type="text" inputmode="decimal" name="data[${itemIndex}][amount]" class="amount-input" readonly></td>
@@ -338,33 +338,87 @@
             calculateTotal();
         }
 
+        const NUMERIC_TEXT_REGEX = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/;
+
+        function uppercaseText(value) {
+            if (value === null || value === undefined) return '';
+            return String(value).toUpperCase();
+        }
+
+        function isNumericText(value) {
+            return NUMERIC_TEXT_REGEX.test(String(value || '').trim());
+        }
+
         function getDecimalsFromString(value) {
-            const text = (value || '').toString();
+            const text = String(value || '').trim();
+            if (!text || !isNumericText(text)) return 0;
             const dotIndex = text.indexOf('.');
             if (dotIndex === -1) return 0;
             return Math.max(0, text.length - dotIndex - 1);
         }
 
-        function clampDecimals(value) {
-            if (!Number.isFinite(value)) return 0;
-            return Math.min(2, Math.max(0, value));
+        function trimNumericString(value) {
+            if (!value.includes('.')) return value;
+            return value.replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.0+$/, '');
         }
 
-        function formatNumber(value, decimals) {
-            const safeDecimals = clampDecimals(decimals);
-            return Number(value).toFixed(safeDecimals);
-        }
+        function formatNumber(value) {
+            if (value === null || value === undefined) return '0';
 
-        function stripZeroFraction(value) {
-            const text = (value || '').toString();
-            const dotIndex = text.indexOf('.');
-            if (dotIndex === -1) return { value: text, decimals: 0 };
-            const integerPart = text.slice(0, dotIndex);
-            const fractionalPart = text.slice(dotIndex + 1);
-            if (!fractionalPart || /^0+$/.test(fractionalPart)) {
-                return { value: integerPart, decimals: 0 };
+            if (typeof value === 'string') {
+                const text = value.trim();
+                if (!text || !isNumericText(text)) return '0';
+
+                const numeric = Number(text);
+                if (!Number.isFinite(numeric)) return '0';
+
+                const unsignedText = text.replace(/^[+-]/, '');
+                const sign = numeric < 0 ? '-' : '';
+
+                if (!unsignedText.includes('.')) {
+                    return `${sign}${String(Math.abs(numeric))}`;
+                }
+
+                const [integerRaw = '0', fractionRaw = ''] = unsignedText.split('.');
+                const integerPart = String(Number(integerRaw || '0'));
+
+                if (!fractionRaw || /^0+$/.test(fractionRaw)) {
+                    return `${sign}${integerPart}`;
+                }
+
+                return `${sign}${integerPart}.${fractionRaw}`;
             }
-            return { value: text, decimals: fractionalPart.length };
+
+            const numeric = Number(value);
+            if (!Number.isFinite(numeric) || Object.is(numeric, -0) || numeric === 0) return '0';
+
+            const asText = String(numeric);
+            if (!/[eE]/.test(asText)) {
+                return trimNumericString(asText);
+            }
+
+            return trimNumericString(numeric.toFixed(12));
+        }
+
+        function calculateAndFormatTotal(rateValue, qtyValue) {
+            const rateText = String(rateValue || '').trim();
+            const qtyText = String(qtyValue || '').trim();
+
+            const rate = Number(rateText);
+            const qty = Number(qtyText);
+
+            if (!Number.isFinite(rate) || !Number.isFinite(qty)) {
+                return '0';
+            }
+
+            const total = rate * qty;
+            const scale = Math.min(10, getDecimalsFromString(rateText) + getDecimalsFromString(qtyText));
+
+            if (scale <= 0) {
+                return formatNumber(total);
+            }
+
+            return formatNumber(total.toFixed(scale));
         }
 
         function calculateAmount(row) {
@@ -373,15 +427,10 @@
             const amountInput = row.querySelector('.amount-input');
 
             const rateRaw = rateInput.value || '';
-            const rateDecimals = clampDecimals(getDecimalsFromString(rateRaw));
-            const rate = parseFloat(rateRaw) || 0;
-            const qty = parseFloat(qtyInput.value) || 0;
-            const amount = rate * qty;
-
-            const formattedAmount = formatNumber(amount, rateDecimals);
-            const normalizedAmount = stripZeroFraction(formattedAmount);
-            amountInput.value = normalizedAmount.value;
-            amountInput.dataset.decimals = String(normalizedAmount.decimals);
+            const qtyRaw = qtyInput.value || '';
+            const formattedAmount = calculateAndFormatTotal(rateRaw, qtyRaw);
+            amountInput.value = formattedAmount;
+            amountInput.dataset.decimals = String(getDecimalsFromString(formattedAmount));
             calculateTotal();
         }
 
@@ -390,15 +439,16 @@
             let maxDecimals = 0;
             document.querySelectorAll('.amount-input').forEach(input => {
                 total += parseFloat(input.value) || 0;
-                const decimals = clampDecimals(
-                    Number.parseInt(input.dataset.decimals || getDecimalsFromString(input.value), 10)
-                );
+                const decimals = Number.parseInt(input.dataset.decimals || getDecimalsFromString(input.value), 10);
                 if (decimals > maxDecimals) maxDecimals = decimals;
             });
-            const formattedTotal = formatNumber(total, maxDecimals);
-            const normalizedTotal = stripZeroFraction(formattedTotal);
-            document.getElementById('total_amount_display').innerText = normalizedTotal.value;
-            document.getElementById('total_amount_hidden').value = normalizedTotal.value;
+
+            const formattedTotal = maxDecimals > 0
+                ? formatNumber(total.toFixed(Math.min(maxDecimals, 10)))
+                : formatNumber(total);
+
+            document.getElementById('total_amount_display').innerText = formattedTotal;
+            document.getElementById('total_amount_hidden').value = formattedTotal;
         }
 
         function attachListeners(row) {
@@ -408,6 +458,26 @@
 
         // Initial listener for the first row
         attachListeners(document.querySelector('.item-row'));
+
+        document.addEventListener('input', (event) => {
+            const target = event.target;
+            if (!(target instanceof HTMLInputElement) && !(target instanceof HTMLTextAreaElement)) {
+                return;
+            }
+
+            const shouldUppercase = (target.matches('input[type="text"]') || target.matches('textarea'))
+                && !target.classList.contains('amount-input');
+
+            if (!shouldUppercase) return;
+
+            const cursorStart = target.selectionStart;
+            const cursorEnd = target.selectionEnd;
+            target.value = uppercaseText(target.value);
+
+            if (typeof cursorStart === 'number' && typeof cursorEnd === 'number') {
+                target.setSelectionRange(cursorStart, cursorEnd);
+            }
+        });
         
         // Default today's date
         document.getElementById('date').valueAsDate = new Date();

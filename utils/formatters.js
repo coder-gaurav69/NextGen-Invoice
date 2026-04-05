@@ -1,63 +1,103 @@
-/**
- * Capitalize text - converts to Proper Case (Title Case)
- * Example: "paracetamol tablet" → "Paracetamol Tablet"
- */
-export function capitalizeText(text) {
-  // Handle null, undefined, empty string
-  if (!text || typeof text !== 'string') {
-    return '';
-  }
+const NUMERIC_TEXT_REGEX = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/;
 
-  return text
-    .toLowerCase()
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+function isNumericText(value) {
+  return NUMERIC_TEXT_REGEX.test(value.trim());
+}
+
+function getFractionLength(value) {
+  const text = String(value ?? '').trim();
+  if (!text || !isNumericText(text)) return 0;
+  const dotIndex = text.indexOf('.');
+  if (dotIndex === -1) return 0;
+  return text.length - dotIndex - 1;
+}
+
+function trimNumericString(value) {
+  if (!value.includes('.')) return value;
+  return value.replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.0+$/, '');
 }
 
 /**
- * Format number - remove trailing zeros but preserve meaningful decimals
- * Examples:
- * - 52.000 → "52"
- * - 52.50 → "52.50"
- * - 472.05 → "472.05"
- * - null/undefined → "0"
+ * Convert user text input to uppercase.
  */
-export function formatNumber(number) {
-  // Handle null, undefined, NaN
-  if (number === null || number === undefined || isNaN(number)) {
-    return '0';
-  }
-
-  // Convert to number if string
-  const num = typeof number === 'string' ? parseFloat(number) : number;
-
-  // If not a valid number, return 0
-  if (isNaN(num)) {
-    return '0';
-  }
-
-  // Convert to string with up to 10 decimal places to preserve precision
-  const str = num.toFixed(10);
-
-  // Remove trailing zeros after decimal point
-  const trimmed = str.replace(/\.?0+$/, '');
-
-  return trimmed;
+export function uppercase(text) {
+  if (text === null || text === undefined) return '';
+  return String(text).toUpperCase();
 }
 
 /**
- * Calculate total and format it
- * Calculation is done with full precision, formatting applied only for display
+ * Backward-compatible alias for existing imports.
+ */
+export const capitalizeText = uppercase;
+
+/**
+ * Format numbers for display.
+ * - "52.000" => "52"
+ * - "52.50" => "52.50"
+ * - 472.05 => "472.05"
+ * - null/invalid => "0"
+ */
+export function formatNumber(input) {
+  if (input === null || input === undefined) return '0';
+
+  if (typeof input === 'string') {
+    const text = input.trim();
+    if (!text) return '0';
+    if (!isNumericText(text)) return '0';
+
+    const numeric = Number(text);
+    if (!Number.isFinite(numeric)) return '0';
+
+    const unsignedText = text.replace(/^[+-]/, '');
+    const sign = numeric < 0 ? '-' : '';
+
+    if (!unsignedText.includes('.')) {
+      return `${sign}${String(Math.abs(numeric))}`;
+    }
+
+    const [integerRaw = '0', fractionRaw = ''] = unsignedText.split('.');
+    const integerPart = String(Number(integerRaw || '0'));
+
+    if (!fractionRaw || /^0+$/.test(fractionRaw)) {
+      return `${sign}${integerPart}`;
+    }
+
+    return `${sign}${integerPart}.${fractionRaw}`;
+  }
+
+  const numeric = Number(input);
+  if (!Number.isFinite(numeric)) return '0';
+  if (Object.is(numeric, -0) || numeric === 0) return '0';
+
+  const normalized = Number(numeric.toPrecision(15));
+  const asText = String(normalized);
+  if (!/[eE]/.test(asText)) {
+    return trimNumericString(asText);
+  }
+
+  return trimNumericString(normalized.toFixed(12));
+}
+
+/**
+ * Calculate total and format for display without mutating raw input values.
  */
 export function calculateAndFormatTotal(rate, quantity) {
-  // Handle invalid inputs
-  const r = parseFloat(rate) || 0;
-  const q = parseFloat(quantity) || 0;
+  const rateText = String(rate ?? '').trim();
+  const qtyText = String(quantity ?? '').trim();
 
-  // Calculate with full precision
-  const total = r * q;
+  const rateValue = Number(rateText);
+  const qtyValue = Number(qtyText);
 
-  // Format only for display
-  return formatNumber(total);
+  if (!Number.isFinite(rateValue) || !Number.isFinite(qtyValue)) {
+    return '0';
+  }
+
+  const total = rateValue * qtyValue;
+  const scale = Math.min(10, getFractionLength(rateText) + getFractionLength(qtyText));
+
+  if (scale <= 0) {
+    return formatNumber(total);
+  }
+
+  return formatNumber(total.toFixed(scale));
 }

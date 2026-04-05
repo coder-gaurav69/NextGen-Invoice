@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { capitalizeText, formatNumber, calculateAndFormatTotal } from '../utils/formatters';
+import { uppercase, formatNumber, calculateAndFormatTotal } from '../utils/formatters';
 
 /**
  * Medicine Form Component
@@ -25,7 +25,7 @@ export default function MedicineForm() {
 
   /**
    * Handle text input (name, batch, expiry)
-   * Apply capitalization only for display
+    * Apply uppercase only for display
    */
   const handleTextChange = (e) => {
     const { name, value } = e.target;
@@ -37,7 +37,7 @@ export default function MedicineForm() {
 
     setDisplayData(prev => ({
       ...prev,
-      [name]: capitalizeText(value),
+      [name]: uppercase(value),
     }));
   };
 
@@ -81,9 +81,9 @@ export default function MedicineForm() {
     e.preventDefault();
 
     const payload = {
-      item_name: formData.itemName,
-      batch_no: formData.batchNo,
-      exp: formData.expiry,
+      item_name: uppercase(formData.itemName),
+      batch_no: uppercase(formData.batchNo),
+      exp: uppercase(formData.expiry),
       rate: parseFloat(formData.rate) || 0,
       quantity: parseFloat(formData.quantity) || 0,
       amount: calculateAndFormatTotal(formData.rate, formData.quantity),

@@ -2,6 +2,7 @@ import express from "express";
 import puppeteer from "puppeteer";
 import path from "path";
 import { fileURLToPath } from "url";
+import { uppercase, formatNumber, calculateAndFormatTotal } from "./utils/formatters.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,6 +23,66 @@ function safeText(val, fallback = "") {
   return String(val ?? "").trim() || fallback;
 }
 
+function sanitizeFileNamePart(value, fallback = "NA") {
+  const cleaned = safeText(value, fallback)
+    .replace(/[<>:"/\\|?*\x00-\x1F]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return cleaned || fallback;
+}
+
+const MONTHS = [
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DEC",
+];
+
+function formatExpiry(value) {
+  const raw = safeText(value).toUpperCase();
+  if (!raw) return "";
+
+  const yyyyMm = raw.match(/^(\d{4})-(\d{1,2})$/);
+  if (yyyyMm) {
+    const year = Number(yyyyMm[1]);
+    const month = Number(yyyyMm[2]);
+    if (month >= 1 && month <= 12) {
+      return `${MONTHS[month - 1]}-${String(year).slice(-2)}`;
+    }
+  }
+
+  const mmYyyy = raw.match(/^(\d{1,2})[/-](\d{2,4})$/);
+  if (mmYyyy) {
+    const month = Number(mmYyyy[1]);
+    const yearText = mmYyyy[2];
+    const year = yearText.length === 2 ? 2000 + Number(yearText) : Number(yearText);
+    if (month >= 1 && month <= 12 && Number.isFinite(year)) {
+      return `${MONTHS[month - 1]}-${String(year).slice(-2)}`;
+    }
+  }
+
+  const monYear = raw.match(/^(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)[-\s/]?(\d{2,4})$/);
+  if (monYear) {
+    const mon = monYear[1];
+    const yearText = monYear[2];
+    const year = yearText.length === 2 ? 2000 + Number(yearText) : Number(yearText);
+    if (Number.isFinite(year)) {
+      return `${mon}-${String(year).slice(-2)}`;
+    }
+  }
+
+  return raw;
+}
+
 function toNumber(val) {
   const n = parseFloat(val);
   return isNaN(n) ? 0 : n;
@@ -31,33 +92,46 @@ function toNumber(val) {
 
 function buildInvoice(body) {
   const items = Object.values(body.data || {}).map((item) => {
-    const rate = toNumber(item.rate);
-    const qty = toNumber(item.quantity);
+    const rateRaw = safeText(item.rate);
+    const quantityRaw = safeText(item.quantity);
+    const rate = toNumber(rateRaw);
+    const qty = toNumber(quantityRaw);
+    const amountText = calculateAndFormatTotal(rateRaw, quantityRaw);
+    const amountValue = toNumber(amountText);
+    const amountDecimals = amountText.includes(".") ? amountText.split(".")[1].length : 0;
 
     return {
-      item_name: safeText(item.item_name),
-      batch_no: safeText(item.batch_no),
-      exp: safeText(item.exp),
-      rate,
-      quantity: qty,
-      amount: +(rate * qty).toFixed(2),
+      item_name: uppercase(safeText(item.item_name)),
+      batch_no: uppercase(safeText(item.batch_no)),
+      exp: formatExpiry(item.exp),
+      rate: formatNumber(rateRaw),
+      quantity: formatNumber(quantityRaw),
+      amount: amountText,
+      amountValue,
+      amountDecimals,
     };
   });
 
-  const total = items.reduce((s, i) => s + i.amount, 0);
+  const totalValue = items.reduce((sum, item) => sum + item.amountValue, 0);
+  const maxTotalDecimals = items.reduce((max, item) => Math.max(max, item.amountDecimals), 0);
+  const totalText = maxTotalDecimals > 0
+    ? formatNumber(totalValue.toFixed(Math.min(maxTotalDecimals, 10)))
+    : formatNumber(totalValue);
+
+  const normalizedItems = items.map(({ amountValue, amountDecimals, ...rest }) => rest);
 
   return {
     date: safeText(body.date, new Date().toISOString().split("T")[0]),
     dl_no: "HRN-115276",
-    gst_no: safeText(body.gst_no),
-    patient_name: safeText(body.patient_name),
-    ip_no: safeText(body.ip_no),
-    hospital_name: safeText(body.hospital_display || body.hospital_name),
-    unit: safeText(body.unit),
-    address: safeText(body.address),
-    location: safeText(body.location),
-    total_amount: total,
-    data: items,
+    gst_no: uppercase(safeText(body.gst_no)),
+    patient_name: uppercase(safeText(body.patient_name)),
+    ip_no: uppercase(safeText(body.ip_no)),
+    hospital_name: uppercase(safeText(body.hospital_display || body.hospital_name)),
+    unit: uppercase(safeText(body.unit)),
+    address: uppercase(safeText(body.address)),
+    location: uppercase(safeText(body.location)),
+    total_amount: totalText,
+    data: normalizedItems,
     is_pdf: true,
   };
 }
@@ -140,7 +214,11 @@ app.post("/generate", async (req, res) => {
 
     await browser.close();
 
-    const filename = `${invoice.ip_no} - ${invoice.patient_name}.pdf`;
+    const ipNo = sanitizeFileNamePart(invoice.ip_no);
+    const patientName = sanitizeFileNamePart(invoice.patient_name);
+    const hospitalName = sanitizeFileNamePart(invoice.hospital_name);
+    const location = sanitizeFileNamePart(invoice.location);
+    const filename = `${ipNo} - ${patientName} (${hospitalName} - ${location}).pdf`;
 
     res.set({
       "Content-Type": "application/pdf",
