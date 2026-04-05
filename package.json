@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
+    "dev": "concurrently \"nodemon --watch server.js --watch views --ext js,ejs server.js\" \"npm run tw:watch\"",
     "build": "npx puppeteer browsers install chrome",
+    "tw:build": "tailwindcss -i ./public/tailwind.css -o ./public/tw.css --minify",
+    "tw:watch": "tailwindcss -i ./public/tailwind.css -o ./public/tw.css --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -22,5 +25,12 @@
     "pdf-lib": "^1.17.1",
     "puppeteer": "^24.40.0",
     "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.27",
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.14",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^3.4.19"
   }
 }

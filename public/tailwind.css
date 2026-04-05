@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Bookman Old Style";
+  src: url("/fonts/bookman/BOOKOS.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bookman Old Style";
+  src: url("/fonts/bookman/BOOKOSI.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bookman Old Style";
+  src: url("/fonts/bookman/BOOKOSB.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bookman Old Style";
+  src: url("/fonts/bookman/BOOKOSBI.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Calibri";
+  src: url("/fonts/calibri/calibril.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Calibri";
+  src: url("/fonts/calibri/calibrili.woff2") format("woff2");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Calibri";
+  src: url("/fonts/calibri/calibri.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Calibri";
+  src: url("/fonts/calibri/calibrii.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Calibri";
+  src: url("/fonts/calibri/calibrib.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Calibri";
+  src: url("/fonts/calibri/calibriz.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@layer utilities {
+  .font-bookman-regular {
+    font-family: "Bookman Old Style", serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  .font-bookman-italic {
+    font-family: "Bookman Old Style", serif;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .font-bookman-bold {
+    font-family: "Bookman Old Style", serif;
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  .font-bookman-bold-italic {
+    font-family: "Bookman Old Style", serif;
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  .font-calibri-light {
+    font-family: "Calibri", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+
+  .font-calibri-light-italic {
+    font-family: "Calibri", sans-serif;
+    font-weight: 300;
+    font-style: italic;
+  }
+
+  .font-calibri-regular {
+    font-family: "Calibri", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  .font-calibri-italic {
+    font-family: "Calibri", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .font-calibri-bold {
+    font-family: "Calibri", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  .font-calibri-bold-italic {
+    font-family: "Calibri", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+  }
+}
