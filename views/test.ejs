@@ -30,8 +30,41 @@
 /* RESET */
 .invoice-table th,
 .invoice-table td {
-    padding: 2px;
+    padding: 4px 4px;
     box-shadow: none;
+    min-height: 28px;
+    vertical-align: middle;
+}
+
+/* COLUMN WIDTHS */
+.invoice-table th:nth-child(1),
+.invoice-table td:nth-child(1) {
+    width: 25%;
+}
+
+.invoice-table th:nth-child(2),
+.invoice-table td:nth-child(2) {
+    width: 20%;
+}
+
+.invoice-table th:nth-child(3),
+.invoice-table td:nth-child(3) {
+    width: 12%;
+}
+
+.invoice-table th:nth-child(4),
+.invoice-table td:nth-child(4) {
+    width: 15%;
+}
+
+.invoice-table th:nth-child(5),
+.invoice-table td:nth-child(5) {
+    width: 10%;
+}
+
+.invoice-table th:nth-child(6),
+.invoice-table td:nth-child(6) {
+    width: 18%;
 }
 
 /* 🔥 STEP 1: ALL CELLS GET LEFT + TOP */
