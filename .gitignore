@@ -31,6 +31,8 @@ logs/
 # Temporary files
 tmp/
 temp/
+App/.tmp_pdf/
+*.pdf
 
 # Puppeteer browser cache
 .cache/

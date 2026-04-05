@@ -8,7 +8,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
+let browserPromise;
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -88,6 +90,34 @@ function toNumber(val) {
   return isNaN(n) ? 0 : n;
 }
 
+async function getBrowser() {
+  if (!browserPromise) {
+    browserPromise = puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+      ],
+    });
+  }
+
+  return browserPromise;
+}
+
+async function closeBrowser() {
+  if (!browserPromise) return;
+
+  try {
+    const browser = await browserPromise;
+    await browser.close();
+  } catch (err) {
+    console.error("Browser close error:", err);
+  } finally {
+    browserPromise = undefined;
+  }
+}
+
 // ---------------- BUILD DATA ----------------
 
 function buildInvoice(body) {
@@ -156,18 +186,11 @@ app.post("/render", (req, res) => {
 
 // 🔥 PDF GENERATE (FINAL CORRECT)
 app.post("/generate", async (req, res) => {
+  let page;
+
   try {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-
-    const page = await browser.newPage();
-
-    // 🔥 IMPORTANT: use goto (NOT setContent)
-    await page.goto("http://localhost:3000", {
-      waitUntil: "load",
-    });
+    const browser = await getBrowser();
+    page = await browser.newPage();
 
     // Inject actual data
     const invoice = buildInvoice(req.body);
@@ -180,7 +203,7 @@ app.post("/generate", async (req, res) => {
     });
 
     await page.setContent(html, {
-      waitUntil: "load",
+      waitUntil: "domcontentloaded",
     });
 
     await page.emulateMediaType("print");
@@ -199,8 +222,6 @@ app.post("/generate", async (req, res) => {
       },
     });
 
-    await browser.close();
-
     const ipNo = sanitizeFileNamePart(invoice.ip_no);
     const patientName = sanitizeFileNamePart(invoice.patient_name);
     const hospitalName = sanitizeFileNamePart(invoice.hospital_name);
@@ -216,9 +237,28 @@ app.post("/generate", async (req, res) => {
   } catch (err) {
     console.error("PDF ERROR:", err);
     res.status(500).send("PDF generation failed");
+  } finally {
+    if (page) {
+      await page.close();
+    }
   }
+});
+
+process.on("SIGINT", async () => {
+  await closeBrowser();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  await closeBrowser();
+  process.exit(0);
 });
 
 app.listen(PORT, () => {
   console.log(`http://localhost:${PORT}`);
+
+  // Warm up browser once so the first PDF request is faster.
+  getBrowser().catch((err) => {
+    console.error("Browser warmup failed:", err);
+  });
 });
