@@ -126,7 +126,7 @@
                                 <tr class="item-row">
                                     <td><input type="text" name="data[0][item_name]" required placeholder="Medicine Name"></td>
                                     <td><input type="text" name="data[0][batch_no]" required placeholder="B123..."></td>
-                                    <td><input type="text" name="data[0][exp]" required placeholder="MAY-25" maxlength="7" pattern="^(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)-\d{2}$" title="Use format like MAY-25"></td>
+                                    <td><input type="month" name="data[0][exp]" required></td>
                                     <td><input type="number" step="0.01" min="0" name="data[0][rate]" class="rate-input" required placeholder="0.00"></td>
                                     <td><input type="number" min="1" name="data[0][quantity]" class="qty-input" required placeholder="0"></td>
                                     <td><input type="text" inputmode="decimal" name="data[0][amount]" class="amount-input" readonly value="0"></td>
@@ -322,7 +322,7 @@
             row.innerHTML = `
                 <td><input type="text" name="data[${itemIndex}][item_name]" required></td>
                 <td><input type="text" name="data[${itemIndex}][batch_no]" required></td>
-                <td><input type="text" name="data[${itemIndex}][exp]" required placeholder="MAY-25" maxlength="7" pattern="^(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)-\d{2}$" title="Use format like MAY-25"></td>
+                <td><input type="month" name="data[${itemIndex}][exp]" required></td>
                 <td><input type="number" step="0.01" min="0" name="data[${itemIndex}][rate]" class="rate-input" required></td>
                 <td><input type="number" min="1" name="data[${itemIndex}][quantity]" class="qty-input" required></td>
                 <td><input type="text" inputmode="decimal" name="data[${itemIndex}][amount]" class="amount-input" readonly></td>
