@@ -140,20 +140,7 @@ function buildInvoice(body) {
 
 // Preview page
 app.get("/", (req, res) => {
-  res.render("test", {
-    date: new Date().toISOString().split("T")[0],
-    dl_no: "HRN-115276",
-    gst_no: "06AAACU7727R1ZN",
-    patient_name: "John Doe",
-    ip_no: "12345",
-    hospital_name: "PARK HOSPITAL",
-    unit: "(A UNIT OF UMKAL HEALTHCARE PVT.LTD)",
-    address: "H-BLOCK, PALAM VIHAR, GURGRAM - 122017",
-    location: "Delhi",
-    total_amount: 1000,
-    data: [],
-    is_pdf: false,
-  });
+ res.render('form');
 });
 
 // Form page
