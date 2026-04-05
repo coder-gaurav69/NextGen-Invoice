@@ -262,6 +262,12 @@
         const locationInput = document.getElementById('location');
         const hospitalDisplayInput = document.getElementById('hospital_display');
 
+        function normalizeAddressLines(value) {
+            return String(value || '')
+                .replace(/\\n/g, '\n')
+                .replace(/\/n/g, '\n');
+        }
+
         hospitalSelect.addEventListener('change', (e) => {
             const selected = e.target.value;
             const isOther = selected === 'Other';
@@ -284,7 +290,7 @@
             if (hospitalData[selected]) {
                 hospitalDisplayInput.value = hospitalData[selected].displayName || '';
                 unitInput.value = hospitalData[selected].unit;
-                addressInput.value = hospitalData[selected].address;
+                addressInput.value = normalizeAddressLines(hospitalData[selected].address);
                 gstInput.value = hospitalData[selected].gst;
                 locationInput.value = hospitalData[selected].location;
             } else {

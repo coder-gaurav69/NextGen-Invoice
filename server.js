@@ -9,6 +9,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const APP_BASE_URL = process.env.APP_BASE_URL || `http://127.0.0.1:${PORT}`;
 
 let browserPromise;
 
@@ -202,8 +203,13 @@ app.post("/generate", async (req, res) => {
       });
     });
 
-    await page.setContent(html, {
-      waitUntil: "domcontentloaded",
+    // Ensure /tw.css, images, and font paths resolve when rendering in Puppeteer.
+    const htmlWithBase = html.includes("<head>")
+      ? html.replace("<head>", `<head><base href="${APP_BASE_URL}/">`)
+      : html;
+
+    await page.setContent(htmlWithBase, {
+      waitUntil: "networkidle0",
     });
 
     await page.emulateMediaType("print");
