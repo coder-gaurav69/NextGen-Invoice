@@ -200,8 +200,8 @@ app.post("/generate", async (req, res) => {
 
     const pdf = await page.pdf({
       format: "A4",
-      width: "210mm",
-      height: "290mm",
+      // width: '210mm',     // A4 width
+      // height: '250mm',
       printBackground: true,
       preferCSSPageSize: true,
       margin: {

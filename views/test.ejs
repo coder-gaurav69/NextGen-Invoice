@@ -12,9 +12,11 @@
         @page {
             size: A4;
             margin: 10mm 10mm 3mm 10mm;
+            height:270mm;
         }
 
         body {
+            line-height: 1.5;
             margin: 0;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -237,7 +239,7 @@ body.is-pdf .invoice-table tbody tr:first-child:last-child > *:last-child {
     </header>
 
     <div>
-        <img src="/logo.png" width="202" height="137">
+        <img src="/finalLogo.png" width="202" height="137">
     </div>
 
     <div class="w-full flex justify-end pr-8">
@@ -330,7 +332,7 @@ body.is-pdf .invoice-table tbody tr:first-child:last-child > *:last-child {
         </tbody>
     </table>
 
-    <% for (let i = 0; i < 8; i++) { %>
+    <% for (let i = 0; i < 9-data.length; i++) { %>
         <div class="h-[12pt]"></div>
     <% } %>
 
@@ -339,7 +341,7 @@ body.is-pdf .invoice-table tbody tr:first-child:last-child > *:last-child {
         <p><%= total_amount %> /-</p>
     </div>
 
-    <% for (let i = 0; i < 4; i++) { %>
+    <% for (let i = 0; i < 3 + (9 - data.length); i++) { %>
         <div class="h-[11pt]"></div>
     <% } %>
 
