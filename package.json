@@ -7,7 +7,8 @@
     "start": "node server.js",
     "dev": "concurrently \"nodemon --watch server.js --watch views --ext js,ejs server.js\" \"npm run tw:watch\"",
     "build": "npm run tw:build",
-    "browser:install": "npx puppeteer browsers install chrome",
+    "postinstall": "npm run browser:install",
+    "browser:install": "npx puppeteer browsers install chrome --path ./.cache/puppeteer",
     "tw:build": "tailwindcss -i ./public/tailwind.css -o ./public/tw.css --minify",
     "tw:watch": "tailwindcss -i ./public/tailwind.css -o ./public/tw.css --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
