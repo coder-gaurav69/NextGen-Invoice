@@ -41,7 +41,7 @@
             <p class="subtitle">Quickly generate professional proforma invoices</p>
         </header>
         
-        <form action="/generate" method="POST">
+        <form id="invoice_form" action="/generate" method="POST">
             <div class="section">
                 <h2 class="section-title">General Details</h2>
                 <div class="grid">
@@ -253,6 +253,7 @@
             }
         };
 
+        const invoiceForm = document.getElementById('invoice_form');
         const hospitalSelect = document.getElementById('hospital_select');
         const customHospitalGroup = document.getElementById('custom_hospital_group');
         const customHospitalInput = document.getElementById('custom_hospital_name');
@@ -261,6 +262,12 @@
         const gstInput = document.getElementById('gst_no');
         const locationInput = document.getElementById('location');
         const hospitalDisplayInput = document.getElementById('hospital_display');
+        const itemsTbody = document.getElementById('items_tbody');
+        const submitButton = invoiceForm.querySelector('button[type="submit"]');
+        const submitButtonDefaultHtml = submitButton.innerHTML;
+        const initialItemRowMarkup = itemsTbody.innerHTML;
+
+        let isGeneratingPdf = false;
 
         function normalizeAddressLines(value) {
             return String(value || '')
@@ -320,9 +327,99 @@
             }
         });
 
+        function parseFilenameFromDisposition(disposition) {
+            if (!disposition) return 'invoice.pdf';
+
+            const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+            if (utf8Match && utf8Match[1]) {
+                try {
+                    return decodeURIComponent(utf8Match[1]);
+                } catch (error) {
+                    console.warn('Unable to decode UTF-8 filename:', error);
+                }
+            }
+
+            const asciiMatch = disposition.match(/filename="?([^";]+)"?/i);
+            if (asciiMatch && asciiMatch[1]) {
+                return asciiMatch[1];
+            }
+
+            return 'invoice.pdf';
+        }
+
+        function triggerDownload(blob, fileName) {
+            const blobUrl = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+        }
+
+        function setDefaultInvoiceDate() {
+            document.getElementById('date').valueAsDate = new Date();
+        }
+
+        function resetInvoiceFormAfterDownload() {
+            invoiceForm.reset();
+            itemsTbody.innerHTML = initialItemRowMarkup;
+            itemIndex = 1;
+
+            const firstRow = itemsTbody.querySelector('.item-row');
+            if (firstRow) attachListeners(firstRow);
+
+            hospitalSelect.dispatchEvent(new Event('change'));
+            hospitalDisplayInput.value = '';
+            calculateTotal();
+            setDefaultInvoiceDate();
+        }
+
+        invoiceForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            if (isGeneratingPdf) return;
+            if (!invoiceForm.reportValidity()) return;
+
+            isGeneratingPdf = true;
+            submitButton.disabled = true;
+            submitButton.textContent = 'Generating...';
+
+            try {
+                const formData = new FormData(invoiceForm);
+                const encodedFormData = new URLSearchParams();
+                formData.forEach((value, key) => {
+                    encodedFormData.append(key, String(value));
+                });
+
+                const response = await fetch(invoiceForm.action, {
+                    method: 'POST',
+                    body: encodedFormData,
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to generate PDF (status: ${response.status})`);
+                }
+
+                const contentDisposition = response.headers.get('content-disposition');
+                const fileName = parseFilenameFromDisposition(contentDisposition);
+                const pdfBlob = await response.blob();
+
+                triggerDownload(pdfBlob, fileName);
+                resetInvoiceFormAfterDownload();
+            } catch (error) {
+                console.error('PDF download error:', error);
+                alert('PDF generate nahi ho paaya. Please dobara try karein.');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = submitButtonDefaultHtml;
+                isGeneratingPdf = false;
+            }
+        });
+
         let itemIndex = 1;
         function addItem() {
-            const tbody = document.getElementById('items_tbody');
             const row = document.createElement('tr');
             row.classList.add('item-row');
             row.innerHTML = `
@@ -334,7 +431,7 @@
                 <td><input type="text" inputmode="decimal" name="data[${itemIndex}][amount]" class="amount-input" readonly></td>
                 <td><button type="button" class="btn btn-danger" onclick="removeItem(this)">&times;</button></td>
             `;
-            tbody.appendChild(row);
+            itemsTbody.appendChild(row);
             itemIndex++;
             attachListeners(row);
         }
@@ -486,7 +583,7 @@
         });
         
         // Default today's date
-        document.getElementById('date').valueAsDate = new Date();
+        setDefaultInvoiceDate();
     </script>
 </body>
 </html>
