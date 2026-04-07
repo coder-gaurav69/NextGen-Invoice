@@ -37,6 +37,15 @@ app.use(express.static("public", {
   maxAge: "30d",
   immutable: true,
 }));
+
+// 🔥 DEBUG: Log font file requests
+app.use((req, res, next) => {
+  if (req.path.includes('/fonts/')) {
+    console.log(`📦 Font Request: ${req.path}`);
+  }
+  next();
+});
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -294,6 +303,9 @@ app.post("/generate", async (req, res) => {
   let page;
 
   try {
+    console.log("\n🔥 PDF Generation Started");
+    console.log("PDF_BASE_URL:", PDF_BASE_URL);
+    
     page = await acquirePdfPage();
 
     // Inject actual data
@@ -310,6 +322,10 @@ app.post("/generate", async (req, res) => {
     const htmlWithBase = html.includes("<head>")
       ? html.replace("<head>", `<head><base href="${PDF_BASE_URL}/">`)
       : html;
+    
+    // 🔥 DEBUG: Check if @font-face is in the HTML
+    const fontFaceCount = (html.match(/@font-face/g) || []).length;
+    console.log(`Found ${fontFaceCount} @font-face declarations in HTML`);
 
     await page.setContent(htmlWithBase, {
       waitUntil: PDF_CONTENT_WAIT_UNTIL,
@@ -348,7 +364,23 @@ app.post("/generate", async (req, res) => {
       ));
 
       if (waitForFonts && document.fonts && typeof document.fonts.ready?.then === "function") {
+        // 🔥 DEBUG: Log font information
+        console.log("=== FONT DEBUG ===");
+        console.log("Waiting for fonts...");
+        console.log("document.fonts.size:", document.fonts.size);
+        
+        // List all fonts
+        for (const font of document.fonts) {
+          console.log(`Font: ${font.family}, Weight: ${font.weight}, Style: ${font.style}, Status: ${font.status}`);
+        }
+        
         await withTimeout(document.fonts.ready);
+        
+        console.log("Fonts loaded. Final status:");
+        for (const font of document.fonts) {
+          console.log(`Font: ${font.family}, Weight: ${font.weight}, Style: ${font.style}, Status: ${font.status}`);
+        }
+        console.log("=== END FONT DEBUG ===");
       }
     }, {
       waitTimeoutMs: PDF_ASSET_WAIT_TIMEOUT_MS,
@@ -377,6 +409,9 @@ app.post("/generate", async (req, res) => {
     const location = sanitizeFileNamePart(invoice.location);
     const filename = `${ipNo} - ${patientName} (${hospitalName} - ${location}).pdf`;
 
+    console.log(`✅ PDF Generated Successfully: ${filename}`);
+    console.log(`PDF Size: ${pdf.length} bytes\n`);
+
     res.set({
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="${filename}"`,
@@ -384,7 +419,7 @@ app.post("/generate", async (req, res) => {
 
     res.send(pdf);
   } catch (err) {
-    console.error("PDF ERROR:", err);
+    console.error("❌ PDF ERROR:", err);
     res.status(500).send("PDF generation failed");
   } finally {
     if (page) {
