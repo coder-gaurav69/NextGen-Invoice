@@ -41,8 +41,20 @@ app.use(express.static("public", {
 // 🔥 DEBUG: Log font file requests
 app.use((req, res, next) => {
   if (req.path.includes('/fonts/')) {
-    console.log(`📦 Font Request: ${req.path}`);
+    console.log(`📦 Font Request: ${req.path} - Status ${res.statusCode}`);
   }
+  next();
+});
+
+// 🔥 DEBUG: Log after response is sent
+app.use((req, res, next) => {
+  const originalSend = res.send;
+  res.send = function(data) {
+    if (req.path.includes('/fonts/')) {
+      console.log(`✅ Font Served: ${req.path} (${Buffer.byteLength(data)} bytes)`);
+    }
+    return originalSend.call(this, data);
+  };
   next();
 });
 
@@ -363,25 +375,34 @@ app.post("/generate", async (req, res) => {
         images.map(waitForImageReady)
       ));
 
-      if (waitForFonts && document.fonts && typeof document.fonts.ready?.then === "function") {
-        // 🔥 DEBUG: Log font information
-        console.log("=== FONT DEBUG ===");
-        console.log("Waiting for fonts...");
-        console.log("document.fonts.size:", document.fonts.size);
-        
-        // List all fonts
-        for (const font of document.fonts) {
-          console.log(`Font: ${font.family}, Weight: ${font.weight}, Style: ${font.style}, Status: ${font.status}`);
+      // 🔥 DETAILED FONT LOGGING
+      console.log("=== DETAILED FONT ANALYSIS ===");
+      console.log("Total fonts in document.fonts:", document.fonts?.size || 0);
+      
+      if (document.fonts && document.fonts.entries) {
+        let count = 0;
+        for (const font of document.fonts.entries()) {
+          console.log(`  [${count}] Family: "${font.family}", Weight: ${font.weight}, Style: ${font.style}, Status: ${font.status}`);
+          count++;
         }
-        
+      }
+
+      if (waitForFonts && document.fonts && typeof document.fonts.ready?.then === "function") {
+        console.log("Waiting for fonts to be ready...");
         await withTimeout(document.fonts.ready);
         
-        console.log("Fonts loaded. Final status:");
-        for (const font of document.fonts) {
-          console.log(`Font: ${font.family}, Weight: ${font.weight}, Style: ${font.style}, Status: ${font.status}`);
+        console.log("Font status after ready:");
+        let loadedCount = 0;
+        if (document.fonts && document.fonts.entries) {
+          for (const font of document.fonts.entries()) {
+            const status = font.status;
+            console.log(`  "${font.family}" (${font.weight} ${font.style}): ${status}`);
+            if (status === "loaded") loadedCount++;
+          }
         }
-        console.log("=== END FONT DEBUG ===");
+        console.log(`Total fonts loaded: ${loadedCount}/${document.fonts?.size || 0}`);
       }
+      console.log("=== END FONT ANALYSIS ===");
     }, {
       waitTimeoutMs: PDF_ASSET_WAIT_TIMEOUT_MS,
       waitForFonts: PDF_WAIT_FOR_FONTS,

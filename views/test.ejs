@@ -305,6 +305,20 @@ body.is-pdf .invoice-table tbody tr:first-child:last-child > *:last-child {
 
 <body class="<%= is_pdf ? 'is-pdf ' : '' %> font-bookman text-[12pt]">
 
+    <!-- 🔥 HIDDEN FONT LOADER - Force all fonts to load -->
+    <div style="visibility: hidden; position: absolute; width: 0; height: 0; overflow: hidden;">
+        <p style="font-family: 'Bookman Old Style'; font-weight: 400; font-style: normal;">Bookman Regular</p>
+        <p style="font-family: 'Bookman Old Style'; font-weight: 700; font-style: normal;">Bookman Bold</p>
+        <p style="font-family: 'Bookman Old Style'; font-weight: 400; font-style: italic;">Bookman Italic</p>
+        <p style="font-family: 'Bookman Old Style'; font-weight: 700; font-style: italic;">Bookman Bold Italic</p>
+        <p style="font-family: 'Calibri'; font-weight: 300; font-style: normal;">Calibri Light</p>
+        <p style="font-family: 'Calibri'; font-weight: 400; font-style: normal;">Calibri Regular</p>
+        <p style="font-family: 'Calibri'; font-weight: 700; font-style: normal;">Calibri Bold</p>
+        <p style="font-family: 'Calibri'; font-weight: 400; font-style: italic;">Calibri Italic</p>
+        <p style="font-family: 'Calibri'; font-weight: 700; font-style: italic;">Calibri Bold Italic</p>
+        <p style="font-family: 'Calibri'; font-weight: 300; font-style: italic;">Calibri Light Italic</p>
+    </div>
+
     <div class="relative">
         <p class="relative text-center font-calibri-bold text-[16pt] text-[#b4c6e7]">
             PROFORMA INVOICE
@@ -438,6 +452,28 @@ body.is-pdf .invoice-table tbody tr:first-child:last-child > *:last-child {
 
         </div>
     </div>
+
+    <!-- 🔥 DEBUG SCRIPT -->
+    <script>
+        console.log("=== TEST.EJS FONT DEBUG ===");
+        console.log("document.fonts.size:", document.fonts?.size || 0);
+        
+        if (document.fonts && document.fonts.entries) {
+            let count = 0;
+            for (const font of document.fonts.entries()) {
+                console.log(`Font ${count}: Family="${font.family}", Weight=${font.weight}, Style=${font.style}, Status=${font.status}`);
+                count++;
+            }
+        }
+        
+        // Check computed font of body
+        const bodyFont = window.getComputedStyle(document.body).fontFamily;
+        console.log("Body computed font:", bodyFont);
+        
+        // Check if classes are applied
+        console.log("Body classList:", document.body.className);
+        console.log("=== END FONT DEBUG ===");
+    </script>
 
 </body>
 </html>
