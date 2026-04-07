@@ -2,6 +2,7 @@ import express from "express";
 import puppeteer from "puppeteer";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 import { uppercase, formatNumber, calculateAndFormatTotal } from "./utils/formatters.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -304,8 +305,6 @@ app.get("/form", (req, res) => {
 
 // 🔥 DEBUG: Check fonts folder
 app.get("/debug/fonts", (req, res) => {
-  const fs = require("fs");
-  const path = require("path");
   const fontsPath = path.join(__dirname, "public", "fonts");
   
   try {
