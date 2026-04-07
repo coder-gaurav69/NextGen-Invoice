@@ -19,20 +19,21 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        bookman: ['"Bookman Old Style"', 'serif'],
-        'bookman-regular': ['"Bookman Old Style"', 'serif'],
-        'bookman-italic': ['"Bookman Old Style"', 'serif'],
-        'bookman-bold': ['"Bookman Old Style"', 'serif'],
-        'bookman-bold-italic': ['"Bookman Old Style"', 'serif'],
-        calibri: ['Calibri', 'sans-serif'],
-        'calibri-light': ['Calibri', 'sans-serif'],
-        'calibri-light-italic': ['Calibri', 'sans-serif'],
-        'calibri-regular': ['Calibri', 'sans-serif'],
-        'calibri-italic': ['Calibri', 'sans-serif'],
-        'calibri-bold': ['Calibri', 'sans-serif'],
-        'calibri-bold-italic': ['Calibri', 'sans-serif']
+        bookman: ['"Bookman Old Style"', { fontWeight: '400', fontStyle: 'normal' }, 'serif'],
+        'bookman-regular': ['"Bookman Old Style"', { fontWeight: '400', fontStyle: 'normal' }, 'serif'],
+        'bookman-italic': ['"Bookman Old Style"', { fontWeight: '400', fontStyle: 'italic' }, 'serif'],
+        'bookman-bold': ['"Bookman Old Style"', { fontWeight: '700', fontStyle: 'normal' }, 'serif'],
+        'bookman-bold-italic': ['"Bookman Old Style"', { fontWeight: '700', fontStyle: 'italic' }, 'serif'],
+        calibri: ['Calibri', { fontWeight: '400', fontStyle: 'normal' }, 'sans-serif'],
+        'calibri-light': ['Calibri', { fontWeight: '300', fontStyle: 'normal' }, 'sans-serif'],
+        'calibri-light-italic': ['Calibri', { fontWeight: '300', fontStyle: 'italic' }, 'sans-serif'],
+        'calibri-regular': ['Calibri', { fontWeight: '400', fontStyle: 'normal' }, 'sans-serif'],
+        'calibri-italic': ['Calibri', { fontWeight: '400', fontStyle: 'italic' }, 'sans-serif'],
+        'calibri-bold': ['Calibri', { fontWeight: '700', fontStyle: 'normal' }, 'sans-serif'],
+        'calibri-bold-italic': ['Calibri', { fontWeight: '700', fontStyle: 'italic' }, 'sans-serif']
       }
     }
   },
   plugins: []
 };
+
