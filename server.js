@@ -34,9 +34,24 @@ const pagePool = [];
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+// 🔥 SET PROPER MIME TYPES AND HEADERS FOR FONTS
 app.use(express.static("public", {
   maxAge: "30d",
   immutable: true,
+  setHeaders: (res, path) => {
+    if (path.endsWith('.woff2')) {
+      res.setHeader('Content-Type', 'font/woff2');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+    }
+    if (path.endsWith('.woff')) {
+      res.setHeader('Content-Type', 'font/woff');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+    }
+    if (path.endsWith('.ttf')) {
+      res.setHeader('Content-Type', 'font/ttf');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+    }
+  }
 }));
 
 // 🔥 DEBUG: Log font file requests
@@ -328,6 +343,46 @@ app.get("/debug/fonts", (req, res) => {
   }
 });
 
+// 🔥 TEST: Serve a test HTML page that loads fonts
+app.get("/debug/font-test", (req, res) => {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        @font-face {
+          font-family: "Bookman Test";
+          src: url('/fonts/bookman/BOOKOS.woff2') format('woff2');
+        }
+        @font-face {
+          font-family: "Calibri Test";
+          src: url('/fonts/calibri/calibri.woff2') format('woff2');
+        }
+        body { font-family: "Bookman Test", serif; }
+        .calibri { font-family: "Calibri Test", sans-serif; }
+      </style>
+    </head>
+    <body>
+      <h1>🔥 Font Test Page</h1>
+      <p>This text should be in Bookman Old Style</p>
+      <p class="calibri">This text should be in Calibri</p>
+      <p>Fonts loaded: <span id="status">checking...</span></p>
+      <pre id="debug"></pre>
+      
+      <script>
+        setTimeout(() => {
+          const fonts = Array.from(document.fonts || []);
+          const status = fonts.map(f => \`\${f.family}: \${f.status}\`).join('\\n');
+          document.getElementById('debug').textContent = status;
+          document.getElementById('status').textContent = fonts.length;
+        }, 2000);
+      </script>
+    </body>
+    </html>
+  `;
+  res.send(html);
+});
+
 // 🔥 RENDER ROUTE (IMPORTANT)
 app.post("/render", (req, res) => {
   const invoice = buildInvoice(req.body);
@@ -343,6 +398,7 @@ app.post("/generate", async (req, res) => {
   try {
     console.log("\n🔥 PDF Generation Started");
     console.log("PDF_BASE_URL:", PDF_BASE_URL);
+    console.log("NODE_ENV:", process.env.NODE_ENV);
     
     page = await acquirePdfPage();
 
