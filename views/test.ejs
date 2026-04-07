@@ -80,6 +80,48 @@
             font-style: italic;
         }
 
+        /* 🔥 FORCE FONT APPLICATION FOR TAILWIND CLASSES */
+        .font-bookman,
+        .font-bookman-regular,
+        .font-bookman-bold,
+        .font-bookman-italic,
+        .font-bookman-bold-italic {
+            font-family: 'Bookman Old Style', serif !important;
+        }
+
+        .font-calibri,
+        .font-calibri-light,
+        .font-calibri-light-italic,
+        .font-calibri-regular,
+        .font-calibri-italic,
+        .font-calibri-bold,
+        .font-calibri-bold-italic {
+            font-family: 'Calibri', sans-serif !important;
+        }
+
+        /* Bold variants */
+        .font-bookman-bold,
+        .font-bookman-bold-italic,
+        .font-calibri-bold,
+        .font-calibri-bold-italic {
+            font-weight: 700 !important;
+        }
+
+        /* Light variants */
+        .font-calibri-light,
+        .font-calibri-light-italic {
+            font-weight: 300 !important;
+        }
+
+        /* Italic variants */
+        .font-bookman-italic,
+        .font-bookman-bold-italic,
+        .font-calibri-italic,
+        .font-calibri-light-italic,
+        .font-calibri-bold-italic {
+            font-style: italic !important;
+        }
+
         @page {
             size: A4;
             margin: 8mm 10mm 1mm 10mm;
@@ -91,6 +133,12 @@
             margin: 0;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+            font-family: 'Bookman Old Style', serif !important;
+        }
+
+        /* 🔥 FORCE ALL TEXT ELEMENTS TO USE DEFINED FONTS */
+        body, p, div, span, td, th, table {
+            font-family: inherit !important;
         }
 
         /* ================= GRID FIX (FINAL) ================= */
@@ -303,10 +351,10 @@ body.is-pdf .invoice-table tbody tr:first-child:last-child > *:last-child {
     </style>
 </head>
 
-<body class="<%= is_pdf ? 'is-pdf ' : '' %> font-bookman text-[12pt]">
+<body class="<%= is_pdf ? 'is-pdf ' : '' %> font-bookman text-[12pt]" style="font-family: 'Bookman Old Style', serif !important;">
 
     <!-- 🔥 HIDDEN FONT LOADER - Force all fonts to load -->
-    <div style="visibility: hidden; position: absolute; width: 0; height: 0; overflow: hidden;">
+    <div style="visibility: hidden; position: absolute; width: 0; height: 0; overflow: hidden; font-family: 'Bookman Old Style', 'Calibri', serif;">
         <p style="font-family: 'Bookman Old Style'; font-weight: 400; font-style: normal;">Bookman Regular</p>
         <p style="font-family: 'Bookman Old Style'; font-weight: 700; font-style: normal;">Bookman Bold</p>
         <p style="font-family: 'Bookman Old Style'; font-weight: 400; font-style: italic;">Bookman Italic</p>
@@ -317,6 +365,12 @@ body.is-pdf .invoice-table tbody tr:first-child:last-child > *:last-child {
         <p style="font-family: 'Calibri'; font-weight: 400; font-style: italic;">Calibri Italic</p>
         <p style="font-family: 'Calibri'; font-weight: 700; font-style: italic;">Calibri Bold Italic</p>
         <p style="font-family: 'Calibri'; font-weight: 300; font-style: italic;">Calibri Light Italic</p>
+        <!-- Force every variant -->
+        <span style="font-family: 'Bookman Old Style'; font-weight: 400;">a</span>
+        <span style="font-family: 'Bookman Old Style'; font-weight: 700;">a</span>
+        <span style="font-family: 'Calibri'; font-weight: 300;">a</span>
+        <span style="font-family: 'Calibri'; font-weight: 400;">a</span>
+        <span style="font-family: 'Calibri'; font-weight: 700;">a</span>
     </div>
 
     <div class="relative">
