@@ -302,6 +302,33 @@ app.get("/form", (req, res) => {
   res.render("form");
 });
 
+// 🔥 DEBUG: Check fonts folder
+app.get("/debug/fonts", (req, res) => {
+  const fs = require("fs");
+  const path = require("path");
+  const fontsPath = path.join(__dirname, "public", "fonts");
+  
+  try {
+    const files = fs.readdirSync(fontsPath, { recursive: true });
+    console.log("📁 Fonts directory listing:");
+    files.forEach(f => console.log(`  - ${f}`));
+    res.json({ 
+      success: true,
+      fontsPath,
+      files,
+      fontCount: files.length
+    });
+  } catch (err) {
+    console.error("❌ Fonts directory not found:", err.message);
+    res.json({ 
+      success: false,
+      error: err.message, 
+      fontsPath,
+      note: "Fonts folder missing or not uploaded to Render"
+    });
+  }
+});
+
 // 🔥 RENDER ROUTE (IMPORTANT)
 app.post("/render", (req, res) => {
   const invoice = buildInvoice(req.body);
